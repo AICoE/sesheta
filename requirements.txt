@@ -5,3 +5,4 @@ semver
 pygithub
 gitpython
 dotenv
+travispy
