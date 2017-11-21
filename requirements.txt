@@ -1,1 +1,7 @@
 tornado
+prometheus_client
+gemfileparser
+semver
+pygithub
+gitpython
+dotenv

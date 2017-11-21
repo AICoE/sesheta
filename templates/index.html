@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html lang="en-us" class="ie9 layout-pf layout-pf-fixed"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html lang="en-us" class="layout-pf">
+<!--<![endif]-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <link rel="shortcut icon" href="http://www.patternfly.org/components/patternfly/dist/img/favicon.ico">
+    <!-- iPad retina icon -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-152.png">
+    <!-- iPad retina icon (iOS < 7) -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-144.png">
+    <!-- iPad non-retina icon -->
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-76.png">
+    <!-- iPad non-retina icon (iOS < 7) -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-72.png">
+    <!-- iPhone 6 Plus icon -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-180.png">
+    <!-- iPhone retina icon (iOS < 7) -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-114.png">
+    <!-- iPhone non-retina icon (iOS < 7) -->
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="http://www.patternfly.org/components/patternfly/dist/img/apple-touch-icon-precomposed-57.png">
+    <link rel="stylesheet" href="http://www.patternfly.org/assets/css/patternfly-adjusted.min.css">
+    <link rel="stylesheet" href="http://www.patternfly.org/components/patternfly/dist/css/patternfly-additions.min.css">
+    <link rel="stylesheet" href="http://www.patternfly.org/assets/css/patternfly-site.min.css">
+
+    <script type="text/javascript">
+        window.IMAGE_PATH = "/assets/img"
+    </script>
+    <script src="http://www.patternfly.org/components/jquery/dist/jquery.min.js"></script>
+    <script src="http://www.patternfly.org/components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="http://www.patternfly.org/components/patternfly-bootstrap-combobox/js/bootstrap-combobox.js"></script>
+    <script src="http://www.patternfly.org/components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="http://www.patternfly.org/components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="http://www.patternfly.org/components/d3/d3.min.js"></script>
+    <script src="http://www.patternfly.org/components/c3/c3.min.js"></script>
+    <script src="http://www.patternfly.org/components/datatables/media/js/jquery.dataTables.js"></script>
+    <script src="http://www.patternfly.org/components/google-code-prettify/bin/prettify.min.js"></script>
+    <script src="http://www.patternfly.org/components/clipboard/dist/clipboard.min.js"></script>
+    <script src="http://www.patternfly.org/components/patternfly/dist/js/patternfly.min.js"></script>
+    <script src="http://www.patternfly.org/components/jquery-match-height/dist/jquery.matchHeight-min.js"></script>
+    <script src="http://www.patternfly.org/assets/js/patternfly-site.min.js"></script>
+</head>
+
+<body class="cards-pf">
+    <nav class="navbar navbar-default navbar-pf" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+            <a class="navbar-brand" href="/">
+                <img src="/img/brand.svg" alt="{{ title }}" />
+            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-utility">
+
+                <li class="dropdown">
+                    <a href="#0" class="nav-item-iconic" id="horizontalDropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span title="Help" class="fa pficon-help"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="horizontalDropdownMenu1">
+                        <li><a href="/?topic=help">Help</a></li>
+                        <li><a href="/?topic=about">About</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid container-cards-pf" id="main">
+        <div class="row row-cards-pf">
+            <div class="col-xs-12 col-sm-6 col-md-3">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-question"></span> Dependencies.io
+                    </h2>
+                    <div class="card-pf-body">
+                        <p class="card-pf-aggregate-status-notifications">
+                            <span class="card-pf-aggregate-status-notification">outdated</a>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-3">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-github"></span> Pull Request
+                    </h2>
+                    <div class="card-pf-body">
+                        <p class="card-pf-aggregate-status-notifications">
+                            <span class="card-pf-aggregate-status-notification">opened
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-3">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-{{ build_status }}"></span> Travis CI
+                    </h2>
+                    <div class="card-pf-body">
+                        <p class="card-pf-aggregate-status-notifications">
+                            <span class="card-pf-aggregate-status-notification"><a href="https://travis-ci.org/goern/manageiq"><img src="https://travis-ci.org/goern/manageiq.svg?branch=master" alt="" /></a>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-3">
+                <div class="card-pf card-pf-accented card-pf-aggregate-status">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-{{ build_status }}"></span> Change merge
+                    </h2>
+                    <div class="card-pf-body">
+                        <p class="card-pf-aggregate-status-notifications">
+                            <span class="card-pf-aggregate-status-notification">No
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-cards-pf">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="card-pf">
+                    <div class="card-pf-body">
+                        <p>Please find <a href="https://docs.google.com/document/d/13hmBlGDhAbpvEt8Fsq6Ez6ygrJKx2vK7mR1Ivel4_8E/edit#">more information</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
