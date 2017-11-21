@@ -141,6 +141,15 @@ def create_pr_to_master(target_branch):
 
 
 if __name__ == '__main__':
+    # and request current status from gemnasium
+    deps = get_dependency_status('goern/manageiq')
+
+    # check if gemnasium is up to date...
+    if not deps[0]['locked']:
+        logging.debug(deps[0])
+        logging.error('Gemnasium is outdated...')
+        exit(-1)
+
     # clone our github repository
     cleanup(LOCAL_WORK_COPY)
     try:
@@ -149,12 +158,10 @@ if __name__ == '__main__':
         logging.error(git_error)
         exit(-1)
 
-    # and request current status from gemnasium
-    deps = get_dependency_status('goern/manageiq')
-
     # lets have a look at all dependencies
     for dep in deps:
         if dep['color'] == 'yellow': # and at first, just the yellow ones
+            logging.debug(dep)
             # if we have no major version shift, lets update the Gemfile
             if ((major(dep['locked']) == major(dep['package']['distributions']['stable'])) and
                     (minor(dep['locked']) < minor(dep['package']['distributions']['stable']))):
@@ -165,8 +172,9 @@ if __name__ == '__main__':
                     new_branch = repository.create_head(target_branch)
                     new_branch.checkout()
 
-                    # 2. update Gemfile
+                    # 2. update Gemfile and Gemfile.lock
                     bump_minor(dep['package'])
+                    repository.index.remove(['Gemfile.lock'], working_tree=True)
 
                     # 3. commit work
                     repository.index.add(['Gemfile'])
