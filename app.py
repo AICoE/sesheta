@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import json
+
 import tornado.ioloop
 import tornado.web
 from tornado.escape import json_decode, json_encode
@@ -20,14 +22,14 @@ class MainHandler(tornado.web.RequestHandler):
 class GithubHandler(tornado.web.RequestHandler):
     @WEBHOOK_GITHUB_TIME.time()
     def post(self):
-        print(json_decode(self.request.body))
+        print(json.dumps(json_decode(self.request.body)))
         response = {'result': 'ok'}
         self.write(response)
 
 
 class TravisCIHandler(tornado.web.RequestHandler):
     def post(self):
-        print(json_decode(self.request.body))
+        print(json.dumps(json_decode(self.request.body)))
         response = {'result': 'ok'}
         self.write(response)
 
