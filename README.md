@@ -3,6 +3,10 @@ A ManageIQ Team Member
 
 [![Dependency Status](https://gemnasium.com/badges/github.com/goern/manageiq-bot.svg)](https://gemnasium.com/github.com/goern/manageiq-bot)
 
+# Testing
+
+`curl -d @test/fixtures/travis-webhooks-one-event.urlencoded -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8080/webhooks/travis-ci`
+
 ## Copyright
 
 Copyright (C) 2017 Red Hat Inc.

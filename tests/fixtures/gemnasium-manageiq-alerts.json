@@ -1,0 +1,12 @@
+[{
+    "id": 6508210,
+    "status": "open",
+    "open_at": "2017-05-29T12:39:38.967549Z",
+    "dependency": {
+        "id": 427245809
+    },
+    "advisory": {
+        "id": 711,
+        "title": "Insecure use of /tmp"
+    }
+}]

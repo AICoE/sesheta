@@ -11,8 +11,10 @@ import tornado.httputil
 from tornado.escape import json_decode, json_encode
 from prometheus_client import start_http_server, Summary
 from github import Github
+from github.GithubException import GithubException
 
 DEBUG_LOG_LEVEL = bool(os.getenv('DEBUG', False))
+GITHUB_ACCESS_TOKEN = os.environ.get('GITHUB_ACCESS_TOKEN')
 WEBHOOK_GITHUB_TIME = Summary(
     'webhook_github_processing_seconds', 'Time spent processing Github webhooks request')
 
@@ -28,11 +30,13 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 def create_pr_to_master(target_branch):
     """create a github pr from target_branch to master"""
-    git = Github(os.environ.get('GITHUB_ACCESS_TOKEN'))
+    git = Github(GITHUB_ACCESS_TOKEN)
     repo = git.get_user().get_repo('manageiq')
 
     repo.create_pull('[Thoth] automated minor update of one dependency',
-                     'This PR is generated as part of an automated update, created by Thoth Dependency Bot', 'master', target_branch)
+                     """This PR is generated as part of an automated update, created by [Thoth Dependency Bot](http://dependencies-manageiq-bot.e8ca.engint.openshiftapps.com/)
+
+                     PS: `Gemfile.lock` has been removed from this branch...""", 'master', target_branch)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -56,28 +60,33 @@ class TravisCIHandler(tornado.web.RequestHandler):
         parameters = {}
         hook = {}
         hook['state'] = 'gnaaak'
+        response = {'result': 'ok'}
 
         if 'application/x-www-form-urlencoded' in self.request.headers["Content-Type"]:
             tornado.httputil.parse_body_arguments(
                 'application/x-www-form-urlencoded', self.request.body, parameters, file_dic)
 
-        logging.debug(parameters)
-
-        for key, value in parameters.items():
-            if key is 'payload':
-                hook = value
+        hook = json.loads(str(self.request.body, 'utf-8').split('=', 1)[1])
 
         # TODO handle exceptions
 
         logging.debug("Travis-CI webhook received: %s" % hook)
 
-        if ('success' in hook['state'] and hook['branches'][0]['name'] != 'master'):
-            logging.info("sending PR from %s to master" % json.dumps(hook['branches'][0]['name']))
+        # if the CI job was successful and it is not related to the master branch
+        if 'success' in hook['state']:
+            from_branch = hook['branches']['name']
+            if from_branch != 'master':
+                logging.info("sending PR from %s to master" % from_branch)
 
-            create_pr_to_master(hook['branches'][0]['name'])
+                # send a PR!
+                try:
+                    create_pr_to_master(from_branch)
+                except GithubException as ghe:
+                    logging.error(ghe)
+                    self.set_status(422)
+                    response = {'result': 'fail'}
 
-        response={'result': 'ok'}
-        self.write(response)
+        self.finish(response)
 
 
 def make_app():
@@ -90,6 +99,10 @@ def make_app():
 
 
 if __name__ == "__main__":
+    if not GITHUB_ACCESS_TOKEN:
+        logging.error("GITHUB_ACCESS_TOKEN not provided, terminating")
+        exit(-1)
+
     app = make_app()
     app.listen(8080)
     tornado.ioloop.IOLoop.current().start()
