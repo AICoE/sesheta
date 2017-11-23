@@ -101,7 +101,6 @@ ENV/
 # VSCode
 .vscode/*
 
-iris/.classpath
-iris/.project
-iris/.settings/
-iris/bin/
+manageiq-workdir/
+**/gemnasium-manageiq.json
+sesheta_rsa*

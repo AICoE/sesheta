@@ -48,6 +48,10 @@ class MainHandler(tornado.web.RequestHandler):
         self.render(
             "index.html", title="Thoth - ManageIQ Dependency Bot", build_status=build_status)
 
+class PrometheusHAndler(tornado.web.RequestHandler):
+    def get(request):
+        self.write(prometheus_client.generate_latest()) 
+
 
 class GithubHandler(tornado.web.RequestHandler):
     @WEBHOOK_GITHUB_TIME.time()
@@ -121,6 +125,7 @@ def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/api", ApiHandler),
+        (r"/_metrics", PrometheusHandler),
         (r"/webhooks/github", GithubHandler),
         (r"/webhooks/travis-ci", TravisCIHandler),
         (r"/webhooks/travis-ci/*", TravisCIHandler)

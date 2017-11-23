@@ -1,0 +1,111 @@
+{
+    "kind": "DeploymentConfig",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "dependencies",
+        "generation": 1,
+        "labels": {
+            "app": "dependencies",
+            "member": "bot"
+        }
+    },
+    "spec": {
+        "strategy": {
+            "type": "Rolling",
+            "rollingParams": {
+                "updatePeriodSeconds": 1,
+                "intervalSeconds": 1,
+                "timeoutSeconds": 600,
+                "maxUnavailable": "25%",
+                "maxSurge": "25%"
+            },
+            "resources": {},
+            "activeDeadlineSeconds": 21600
+        },
+        "triggers": [{
+                "type": "ImageChange",
+                "imageChangeParams": {
+                    "automatic": true,
+                    "containerNames": [
+                        "dependencies"
+                    ],
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "namespace": "manageiq-bot",
+                        "name": "dependencies:latest"
+                    }
+                }
+            },
+            {
+                "type": "ConfigChange"
+            }
+        ],
+        "replicas": 1,
+        "test": false,
+        "selector": {
+            "deploymentconfig": "dependencies"
+        },
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "dependencies",
+                    "deploymentconfig": "dependencies",
+                    "member": "bot"
+                }
+            },
+            "spec": {
+                "containers": [{
+                    "name": "dependencies",
+                    "image": "172.30.16.196:5000/manageiq-bot/dependencies",
+                    "ports": [{
+                        "containerPort": 8080,
+                        "protocol": "TCP"
+                    }],
+                    "env": [{
+                            "name": "DEBUG",
+                            "value": "True"
+                        },
+                        {
+                            "name": "GITHUB_ACCESS_TOKEN",
+                            "valueFrom": {
+                                "secretKeyRef": {
+                                    "name": "manageiq-bot",
+                                    "key": "GITHUB_ACCESS_TOKEN"
+                                }
+                            }
+                        },
+                        {
+                            "name": "GEMNASIUM_API_KEY",
+                            "valueFrom": {
+                                "secretKeyRef": {
+                                    "name": "manageiq-bot",
+                                    "key": "GEMNASIUM_API_KEY"
+                                }
+                            }
+                        },
+                        {
+                            "name": "THOTH_DEPENDENCY_BOT_TRAVISCI",
+                            "valueFrom": {
+                                "secretKeyRef": {
+                                    "name": "manageiq-bot",
+                                    "key": "THOTH_DEPENDENCY_BOT_TRAVISCI"
+                                }
+                            }
+                        }
+                    ],
+                    "resources": {
+                        "limits": {
+                            "cpu": "512m",
+                            "memory": "256Mi"
+                        },
+                        "requests": {
+                            "cpu": "250m",
+                            "memory": "64Mi"
+                        }
+                    },
+                    "imagePullPolicy": "Always"
+                }]
+            }
+        }
+    }
+}
