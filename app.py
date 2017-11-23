@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import os
-import json
 import logging
+import json
+from json.decoder import JSONDecodeError
+from urllib.parse import unquote
 
 import tornado.ioloop
 import tornado.web
@@ -12,12 +14,14 @@ from tornado.escape import json_decode, json_encode
 from prometheus_client import start_http_server, Summary
 from github import Github
 from github.GithubException import GithubException
+from travispy import TravisPy
 
 DEBUG_LOG_LEVEL = bool(os.getenv('DEBUG', False))
 GITHUB_ACCESS_TOKEN = os.environ.get('GITHUB_ACCESS_TOKEN')
 WEBHOOK_GITHUB_TIME = Summary(
     'webhook_github_processing_seconds', 'Time spent processing Github webhooks request')
-
+THOTH_DEPENDENCY_BOT_TRAVISCI = os.environ.get('THOTH_DEPENDENCY_BOT_TRAVISCI')
+TRAVISCI_REPO_SLUG= 'goern/manageiq'
 
 if DEBUG_LOG_LEVEL:
     logging.basicConfig(level=logging.DEBUG,
@@ -28,14 +32,13 @@ else:
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-def create_pr_to_master(target_branch):
+def create_pr_to_master(target_branch, change_subject):
     """create a github pr from target_branch to master"""
     git = Github(GITHUB_ACCESS_TOKEN)
-    repo = git.get_user().get_repo('manageiq')
+    repo = git.get_repo('goern/manageiq')
 
-    repo.create_pull('[Thoth] automated minor update of one dependency',
+    repo.create_pull('[Thoth] automated minor update of one dependency: ' + change_subject,
                      """This PR is generated as part of an automated update, created by [Thoth Dependency Bot](http://dependencies-manageiq-bot.e8ca.engint.openshiftapps.com/)
-
                      PS: `Gemfile.lock` has been removed from this branch...""", 'master', target_branch)
 
 class MainHandler(tornado.web.RequestHandler):
@@ -66,21 +69,29 @@ class TravisCIHandler(tornado.web.RequestHandler):
             tornado.httputil.parse_body_arguments(
                 'application/x-www-form-urlencoded', self.request.body, parameters, file_dic)
 
-        hook = json.loads(str(self.request.body, 'utf-8').split('=', 1)[1])
+        logging.debug(unquote(str(self.request.body, 'utf-8')))
+        try:
+            hook = json.loads(
+                unquote(str(self.request.body, 'utf-8')).split('=', 1)[1])
+        except JSONDecodeError as jex:
+            logging.error(jex)
+            return
 
         # TODO handle exceptions
-
-        logging.debug("Travis-CI webhook received: %s" % hook)
+        logging.debug("Travis-CI webhook received: %s" % json.dumps(hook))
 
         # if the CI job was successful and it is not related to the master branch
-        if 'success' in hook['state']:
-            from_branch = hook['branches']['name']
+        if 'passed' in hook['state']:
+            from_branch = hook['branch']
             if from_branch != 'master':
                 logging.info("sending PR from %s to master" % from_branch)
 
                 # send a PR!
                 try:
-                    create_pr_to_master(from_branch)
+                    _b = from_branch.split('/', 1)[1]
+                    updated_dependency = _b.split('-', 1)[1]
+
+                    create_pr_to_master(from_branch, updated_dependency)
                 except GithubException as ghe:
                     logging.error(ghe)
                     self.set_status(422)
@@ -89,9 +100,27 @@ class TravisCIHandler(tornado.web.RequestHandler):
         self.finish(response)
 
 
+async def travis_start_build(build_id):
+    t = TravisPy.github_auth(THOTH_DEPENDENCY_BOT_TRAVISCI)
+    repo = t.repo(TRAVISCI_REPO_SLUG)
+
+    for build in repo.builds:
+        await build.restart()
+
+
+class ApiHandler(tornado.web.RequestHandler):
+     async def post(self):
+        build_id = json_decode(self.request.body)
+
+        await travis_start_build(build_id['build_id'])
+        response = {'result': 'ok'}
+        self.write(response)
+
+
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
+        (r"/api", ApiHandler),
         (r"/webhooks/github", GithubHandler),
         (r"/webhooks/travis-ci", TravisCIHandler),
         (r"/webhooks/travis-ci/*", TravisCIHandler)
@@ -101,6 +130,10 @@ def make_app():
 if __name__ == "__main__":
     if not GITHUB_ACCESS_TOKEN:
         logging.error("GITHUB_ACCESS_TOKEN not provided, terminating")
+        exit(-1)
+
+    if not THOTH_DEPENDENCY_BOT_TRAVISCI:
+        logging.error("THOTH_DEPENDENCY_BOT_TRAVISCI not provided, terminating")
         exit(-1)
 
     app = make_app()
