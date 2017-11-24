@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
-ID_RSA=/home/goern/Source/manageiq-bots/sesheta_rsa
+ID_RSA=${PWD}/sesheta_rsa
 
 exec /usr/bin/ssh -o StrictHostKeyChecking=no -i $ID_RSA "$@"

@@ -11,17 +11,19 @@ import tornado.web
 import tornado.httputil
 
 from tornado.escape import json_decode, json_encode
-from prometheus_client import start_http_server, Summary
+from prometheus_client import generate_latest, Summary, CONTENT_TYPE_LATEST
 from github import Github
 from github.GithubException import GithubException
 from travispy import TravisPy
 
+from configuration import *
+
 DEBUG_LOG_LEVEL = bool(os.getenv('DEBUG', False))
-GITHUB_ACCESS_TOKEN = os.environ.get('GITHUB_ACCESS_TOKEN')
+
 WEBHOOK_GITHUB_TIME = Summary(
     'webhook_github_processing_seconds', 'Time spent processing Github webhooks request')
-THOTH_DEPENDENCY_BOT_TRAVISCI = os.environ.get('THOTH_DEPENDENCY_BOT_TRAVISCI')
-TRAVISCI_REPO_SLUG= 'goern/manageiq'
+WEBHOOK_TRAVISCI_TIME = Summary(
+    'webhook_travisci_processing_seconds', 'Time spent processing Travis-CI webhooks request')
 
 if DEBUG_LOG_LEVEL:
     logging.basicConfig(level=logging.DEBUG,
@@ -48,9 +50,12 @@ class MainHandler(tornado.web.RequestHandler):
         self.render(
             "index.html", title="Thoth - ManageIQ Dependency Bot", build_status=build_status)
 
-class PrometheusHAndler(tornado.web.RequestHandler):
-    def get(request):
-        self.write(prometheus_client.generate_latest()) 
+class PrometheusHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = generate_latest()
+        self.set_header('Content-type', CONTENT_TYPE_LATEST)
+        self.set_header('Content-Length', str(len(data)))
+        self.write(data)
 
 
 class GithubHandler(tornado.web.RequestHandler):
@@ -62,6 +67,7 @@ class GithubHandler(tornado.web.RequestHandler):
 
 
 class TravisCIHandler(tornado.web.RequestHandler):
+    @WEBHOOK_TRAVISCI_TIME.time()
     def post(self):
         file_dic = {}
         parameters = {}
