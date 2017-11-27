@@ -1,9 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""I will update a github issue to reflect what I figured out via travis-ci
+#   manageiq-bot
+#   Copyright(C) 2017 Christoph Görn
+#
+#   This program is free software: you can redistribute it and / or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see < http: // www.gnu.org / licenses / >.
+
+"""This is Thoth, a dependency updating bot for the ManageIQ community.
 """
 
-__version__ = '0.1.0'
+__version__ = '0.3.0'
 
 import os
 import json
@@ -47,13 +63,14 @@ def delete_task(repo_slug, task_issue_id, commit_branch):
              
             # FIXME this chk might be a little bit to weak
             if item.startswith(package_name):  
-                tasks_list.delete(item)
-                tasks_list.add(item.replace(package_name, "~~" + package_name + "~~") +
-                               build_status_image_markdown(GITHUB_ORG_NAME, GITHUB_REPO_NAME, commit_branch))
-                tasks_list.check(item.replace(package_name, "~~" + package_name + "~~") +
-                                 build_status_image_markdown(GITHUB_ORG_NAME, GITHUB_REPO_NAME, commit_branch))
-                print(tasks_list.body)
-                # issue.edit(body=tasks_list.body)
+#                tasks_list.delete(item)
+#                tasks_list.add(item.replace(package_name, "~~" + package_name + "~~") +
+#                               build_status_image_markdown(GITHUB_ORG_NAME, GITHUB_REPO_NAME, commit_branch))
+#                tasks_list.check(item.replace(package_name, "~~" + package_name + "~~") +
+#                                 build_status_image_markdown(GITHUB_ORG_NAME, GITHUB_REPO_NAME, commit_branch))
+#                print(tasks_list.body)
+                tasks_list.check(item)
+                issue.edit(body=tasks_list.body)
 
 
 def get_task_issue_id(repo_slug):

@@ -19,7 +19,7 @@
 """This is Thoth, a dependency updating bot for the ManageIQ community.
 """
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 import os
 import json
