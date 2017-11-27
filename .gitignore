@@ -104,3 +104,4 @@ ENV/
 manageiq-workdir/
 **/gemnasium-manageiq.json
 sesheta_rsa*
+certs/
