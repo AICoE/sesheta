@@ -40,8 +40,7 @@ def create_pr_to_master(target_branch, change_subject):
     repo = git.get_repo('goern/manageiq')
 
     repo.create_pull('[Thoth] automated minor update of one dependency: ' + change_subject,
-                     """This PR is generated as part of an automated update, created by [Thoth Dependency Bot](http://dependencies-manageiq-bot.e8ca.engint.openshiftapps.com/)
-                     PS: `Gemfile.lock` has been removed from this branch...""", 'master', target_branch)
+                     """This PR is generated as part of an automated update, created by [Thoth Dependency Bot](http://dependencies-manageiq-bot.e8ca.engint.openshiftapps.com/)""", 'master', target_branch)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):

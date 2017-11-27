@@ -1,9 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""This is thoth, a dependency updating bot...
+#   manageiq-bot
+#   Copyright(C) 2017 Christoph Görn
+#
+#   This program is free software: you can redistribute it and / or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see < http: // www.gnu.org / licenses / >.
+
+"""This is Thoth, a dependency updating bot for the ManageIQ community.
 """
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 import os
 import json
@@ -20,20 +36,9 @@ from git import Repo, Actor
 from git.exc import GitCommandError
 from github import Github
 
-MASTER_REPO_URL = 'git@github.com:goern/manageiq.git'
-#MASTER_REPO_URL = 'https://github.com/goern/manageiq.git'
-GEMNASIUM_STATUS_URL = 'https://api.gemnasium.com/v1/projects/goern/manageiq/dependencies'
-GITHUB_REPO_NAME = 'manageiq'
-LOCAL_WORK_COPY = './manageiq-workdir'
-SSH_CMD = '/home/goern/Source/manageiq-bots/ssh_command'
-os.environ["SSH_CMD"] = SSH_CMD
+from github_helper import Checklist
 
-try:
-    from dotenv import load_dotenv, find_dotenv
-
-    load_dotenv(find_dotenv())
-except:
-    pass
+from configuration import *
 
 DEBUG_LOG_LEVEL = bool(os.getenv('DEBUG', False))
 
@@ -151,6 +156,18 @@ if __name__ == '__main__':
         print("Host github.com\n\tStrictHostKeyChecking no\n", file=ssh_config)
     """
 
+    if not GITHUB_ACCESS_TOKEN:
+        logging.error("No GITHUB_ACCESS_TOKEN")
+        exit(-1)
+
+    g = Github(login_or_token=GITHUB_ACCESS_TOKEN)
+    logging.info("I am " + g.get_user().name)
+    
+    repo = g.get_repo(TRAVIS_REPO_SLUG)
+    bot_label = repo.get_label('bot')
+
+    tasks_list = Checklist("The following dependencies need minor updates:")
+
     # and request current status from gemnasium
     deps = get_dependency_status('goern/manageiq')
 
@@ -175,8 +192,6 @@ if __name__ == '__main__':
             logging.debug(dep)
             # if we have no major version shift, lets update the Gemfile
             if major(dep['requirement'].split(' ', 1)[1]) == major(dep['package']['distributions']['stable']):
-#            if ((major(dep['locked']) == major(dep['package']['distributions']['stable'])) and
-#                    (minor(dep['locked']) < minor(dep['package']['distributions']['stable']))):
                 target_branch = 'bots-life/updating-' + dep['package']['name']
 
                 if not pr_in_progress(target_branch):
@@ -199,6 +214,10 @@ if __name__ == '__main__':
                                                                                 dep['package']['distributions']['stable']),
                                             author=author, committer=committer)
 
+                    tasks_list.add('{} from {} to {}'.format(dep['package']['name'],
+                                                             dep['requirement'],
+                                                             dep['package']['distributions']['stable']))
+
                     # 4. push to origin
                     with repository.git.custom_environment(GIT_SSH_COMMAND=SSH_CMD):
                         repository.remotes.origin.push(refspec='{}:{}'.format(
@@ -214,3 +233,7 @@ if __name__ == '__main__':
                 logging.info("NOT updating %s %s -> %s" % (dep['package']['name'],
                                                   dep['requirement'],
                                                   dep['package']['distributions']['stable']))
+
+    # 6. open update issue
+    repo.create_issue('[Thoth] proposing minor updates',
+                      body=tasks_list.body, labels=[bot_label])
