@@ -4,5 +4,4 @@ gemfileparser
 semver
 pygithub
 gitpython
-dotenv
 travispy

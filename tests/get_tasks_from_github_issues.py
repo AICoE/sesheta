@@ -41,10 +41,10 @@ else:
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-def create_bot_tasklist(repo_slut):
+def create_bot_tasklist(repo_slug):
     global g
 
-    repo = g.get_repo(repo_slut)
+    repo = g.get_repo(repo_slug)
     bot_label = repo.get_label('bot')
 
     tasks_list = Checklist("have a look at this tasks and take care:")
@@ -54,8 +54,8 @@ def create_bot_tasklist(repo_slut):
                         body=tasks_list.body, labels=[bot_label])
     
 
-def handle_open_tasks(repo_slut):
-    repo = g.get_repo(repo_slut)
+def handle_open_tasks(repo_slug):
+    repo = g.get_repo(repo_slug)
     bot_label = repo.get_label('bot')
     issues = repo.get_issues(state='open', labels=[bot_label])
 
@@ -70,8 +70,8 @@ def handle_open_tasks(repo_slut):
 
                     issue.edit(body=tasks_list.body)
 
-def check_if_PR_ready_to_merge(repo_slut):
-    repo = g.get_repo(repo_slut)
+def check_if_PR_ready_to_merge(repo_slug):
+    repo = g.get_repo(repo_slug)
     bot_label = repo.get_label('bot')
     prs = repo.get_pulls(state='open')
 

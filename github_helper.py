@@ -55,6 +55,8 @@ class Checklist():
     def add(self, item):
         self.process(self.body, {item: False})
 
+    def delete(self, item):
+        self.process(self.body, {item: None})
 
 def successful_travis_build_id(commit):
     """successful_travis_build_id() will return the Travis-CI Build ID of the last successful build of the given Github commit."""

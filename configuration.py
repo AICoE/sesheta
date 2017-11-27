@@ -4,9 +4,18 @@
 """
 
 import os
+import logging
+
 from pathlib import Path
 
 __version__ = '0.1.0'
+
+try:
+    from dotenv import load_dotenv, find_dotenv
+
+    load_dotenv(find_dotenv())
+except Exception as e:
+    logging.warning(e)
 
 # This is for github.com
 GITHUB_ORG_NAME = 'goern'
@@ -32,3 +41,4 @@ os.environ["SSH_CMD"] = SSH_CMD
 
 # whoami
 BOT_USERS = ['sesheta']
+BOT_EMAILS = ['goern+sesheta@redhat.com']
