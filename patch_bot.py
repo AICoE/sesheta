@@ -140,18 +140,8 @@ def cleanup(directory):
         logging.info("Non Fatal Error: " + str(fnfe))
 
 
-
-
-
 if __name__ == '__main__':
-    # set some ssh options so that git works flawlessly
-    """
-    if not os.path.exists(str(Path.home()) + ".ssh/"):
-        os.makedirs(str(Path.home()) + ".ssh/")
-
-    with open(str(Path.home()) + ".ssh/config", "w") as ssh_config:
-        print("Host github.com\n\tStrictHostKeyChecking no\n", file=ssh_config)
-    """
+    logging.debug("using ssh command: {}".format(SSH_CMD))
 
     if not GITHUB_ACCESS_TOKEN:
         logging.error("No GITHUB_ACCESS_TOKEN")

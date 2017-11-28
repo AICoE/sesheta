@@ -15,6 +15,11 @@
                 "containers": [{
                     "name": "patch-bot",
                     "image": "172.30.16.196:5000/manageiq-bot/patch-bot",
+                    "volumeMounts": [{
+                        "mountPath": "/opt/app-root/src/ssh",
+                        "name": "github-ssh-key",
+                        "readOnly": true
+                    }],
                     "env": [{
                             "name": "APP_FILE",
                             "value": "patch_bot.py"
@@ -27,10 +32,39 @@
                                     "key": "GEMNASIUM_API_KEY"
                                 }
                             }
+                        },
+                        {
+                            "name": "GITHUB_ACCESS_TOKEN",
+                            "valueFrom": {
+                                "secretKeyRef": {
+                                    "name": "manageiq-bot",
+                                    "key": "GITHUB_ACCESS_TOKEN"
+                                }
+                            }
+                        },
+                        {
+                            "name": "SSH_CMD",
+                            "valueFrom": {
+                                "configMapKeyRef": {
+                                    "name": "manageiq-bot",
+                                    "key": "SSH_CMD"
+                                }
+                            }
                         }
                     ]
                 }],
-                "restartPolicy": "OnFailure"
+                "restartPolicy": "OnFailure",
+                "volumes": [{
+                    "name": "github-ssh-key",
+                    "secret": {
+                        "secretName": "github",
+                        "defaultMode": 420,
+                        "items": [{
+                            "key": "ssh-privatekey",
+                            "path": "sesheta_rsa"
+                        }]
+                    }
+                }]
             }
         }
     }
