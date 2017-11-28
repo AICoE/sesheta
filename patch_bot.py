@@ -36,7 +36,7 @@ from git import Repo, Actor
 from git.exc import GitCommandError
 from github import Github
 
-from github_helper import Checklist
+from github_helper import Checklist, pr_in_progress
 
 from configuration import *
 
@@ -140,10 +140,7 @@ def cleanup(directory):
         logging.info("Non Fatal Error: " + str(fnfe))
 
 
-def pr_in_progress(target_branch):
-    """pr_in_progress() will check if there is an open PR from target_branch to master"""
-    # TODO
-    return not True
+
 
 
 if __name__ == '__main__':
@@ -180,8 +177,9 @@ if __name__ == '__main__':
     # clone our github repository
     cleanup(LOCAL_WORK_COPY)
     try:
-        logging.info("Cloning git repository %s to %s" % (MASTER_REPO_URL, LOCAL_WORK_COPY))
-        repository = Repo.clone_from(MASTER_REPO_URL, LOCAL_WORK_COPY)
+        logging.info("Cloning git repository %s to %s" %
+                     (MASTER_REPO_URL_RO, LOCAL_WORK_COPY))
+        repository = Repo.clone_from(MASTER_REPO_URL_RO, LOCAL_WORK_COPY)
     except GitCommandError as git_error:
         logging.error(git_error)
         exit(-1)
@@ -194,7 +192,7 @@ if __name__ == '__main__':
             if major(dep['requirement'].split(' ', 1)[1]) == major(dep['package']['distributions']['stable']):
                 target_branch = 'bots-life/updating-' + dep['package']['name']
 
-                if not pr_in_progress(target_branch):
+                if not pr_in_progress(g, TRAVIS_REPO_SLUG, target_branch):
                     # 1. create a new branch
                     new_branch = repository.create_head(target_branch)
                     new_branch.checkout()

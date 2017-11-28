@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from urllib.parse import urlparse
-
+import logging
 
 class Checklist():
     def __init__(self, body=None):
@@ -58,6 +58,7 @@ class Checklist():
     def delete(self, item):
         self.process(self.body, {item: None})
 
+
 def successful_travis_build_id(commit):
     """successful_travis_build_id() will return the Travis-CI Build ID of the last successful build of the given Github commit."""
     _successful_builds = set()
@@ -76,3 +77,20 @@ def travis_build_id(target_url):
     # FIXME need exception handling
 
     return urlparse(target_url).path.split('/')[4]
+
+
+def pr_in_progress(github, repo_slug, target_branch):
+    """pr_in_progress() will check if there is an open PR from target_branch to master"""
+    
+    _found_it = False
+
+    repo = github.get_repo(repo_slug)
+    bot_label = repo.get_label('bot')
+    pulls = repo.get_pulls()
+
+    for pr in pulls:
+        if pr.state == 'open':
+            if target_branch == 'bots-life/updating-' + pr.title.split(': ')[1]:
+                _found_it = True
+
+    return _found_it
