@@ -1,36 +1,39 @@
 {
-    "apiVersion": "batch/v1",
-    "kind": "Job",
+    "apiVersion": "batch/v2alpha1",
+    "kind": "CronJob",
     "metadata": {
         "name": "update-issue-from-travisci"
     },
     "spec": {
-        "parallelism": 1,
-        "completions": 1,
-        "template": {
-            "metadata": {
-                "name": "update-issue-from-travisci"
-            },
+        "schedule": "* */1 * * *",
+        "jobTemplate": {
             "spec": {
-                "containers": [{
-                    "name": "update-issue-from-travisci",
-                    "image": "172.30.16.196:5000/manageiq-bot/patch-bot",
-                    "env": [{
-                            "name": "APP_FILE",
-                            "value": "update_issue_from_travisci.py"
-                        },
-                        {
-                            "name": "GITHUB_ACCESS_TOKEN",
-                            "valueFrom": {
-                                "secretKeyRef": {
-                                    "name": "manageiq-bot",
-                                    "key": "GITHUB_ACCESS_TOKEN"
+                "template": {
+                    "metadata": {
+                        "name": "update-issue-from-travisci"
+                    },
+                    "spec": {
+                        "containers": [{
+                            "name": "update-issue-from-travisci",
+                            "image": "172.30.16.196:5000/manageiq-bot/patch-bot",
+                            "env": [{
+                                    "name": "APP_FILE",
+                                    "value": "update_issue_from_travisci.py"
+                                },
+                                {
+                                    "name": "GITHUB_ACCESS_TOKEN",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "manageiq-bot",
+                                            "key": "GITHUB_ACCESS_TOKEN"
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    ]
-                }],
-                "restartPolicy": "OnFailure"
+                            ]
+                        }],
+                        "restartPolicy": "OnFailure"
+                    }
+                }
             }
         }
     }
