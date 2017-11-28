@@ -24,6 +24,8 @@ GITHUB_REPO_NAME = 'manageiq'
 GITHUB_ACCESS_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
 MASTER_REPO_URL = 'git@github.com:' + \
     GITHUB_ORG_NAME + '/' + GITHUB_REPO_NAME + '.git'
+MASTER_REPO_URL_RO = 'https://github.com/' + \
+    GITHUB_ORG_NAME + '/' + GITHUB_REPO_NAME + '.git'
 UPSTREAM_MASTER_REPO_URL = 'git@github.com:' + \
     GITHUB_UPSTREAM_ORG_NAME + '/' + GITHUB_REPO_NAME + '.git'
 
@@ -36,6 +38,8 @@ GEMNASIUM_STATUS_URL = 'https://api.gemnasium.com/v1/projects/goern/manageiq/dep
 
 # local configuration
 LOCAL_WORK_COPY = './manageiq-workdir'
+
+# if we are not running on OpenShift...
 SSH_CMD = str(Path.cwd()) + '/ssh_command'
 os.environ["SSH_CMD"] = SSH_CMD
 
