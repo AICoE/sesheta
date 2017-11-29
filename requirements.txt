@@ -1,7 +1,7 @@
-tornado
-prometheus_client
-gemfileparser
-semver
-pygithub
-gitpython
-travispy
+tornado==4.5.2
+prometheus_client==0.0.21
+gemfileparser==0.6.2
+semver==2.7.9
+pygithub==1.35
+gitpython==2.1.7
+travispy==0.3.5
