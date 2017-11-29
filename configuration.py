@@ -15,7 +15,7 @@ try:
 
     load_dotenv(find_dotenv())
 except Exception as e:
-    logging.warning(e)
+    logging.info(e)
 
 # This is for github.com
 GITHUB_ORG_NAME = 'goern'
@@ -35,6 +35,16 @@ THOTH_DEPENDENCY_BOT_TRAVISCI = os.environ.get('THOTH_DEPENDENCY_BOT_TRAVISCI')
 
 # Gemnasium
 GEMNASIUM_STATUS_URL = 'https://api.gemnasium.com/v1/projects/goern/manageiq/dependencies'
+
+# DataHub configuration
+DATAHUB_REDHAT_INTERNAL = True
+DATAHUB_ENDPOINT = 'https://es-test-elasticsearch.ose.sbu.lab.eng.bos.redhat.com/'
+DATAHUB_TRAVISCI_INDEX = 'travisci/'
+DATAHUB_CERT_PATH = str(Path.cwd()) + '/certs/'
+DATAHUB_W_CERT = DATAHUB_CERT_PATH + 'system.logging.fluentd.crt'
+DATAHUB_W_KEY = DATAHUB_CERT_PATH + 'system.logging.fluentd.key'
+DATAHUB_R_CERT = DATAHUB_CERT_PATH + 'system.logging.kibana.crt'
+DATAHUB_R_KEY = DATAHUB_CERT_PATH + 'system.logging.kibana.key'
 
 # local configuration
 LOCAL_WORK_COPY = './manageiq-workdir'

@@ -19,18 +19,15 @@
 """This is Thoth, a dependency updating bot for Open-Source Communities.
 """
 
-from github import Github
+import uuid
 
-from github_helper import pr_in_progress
-
-from configuration import GITHUB_ACCESS_TOKEN, TRAVIS_REPO_SLUG
+from datahub_helper import upload_to_datahub
 
 
-def test_pr_in_progress():
-    """This test requires internet access"""
+def test_upload_to_datahub():
+    """This test requires Red Hat intranet access"""
 
-    g = Github(login_or_token=GITHUB_ACCESS_TOKEN)
+    r = upload_to_datahub('pytest', str(uuid.uuid4()), str(uuid.uuid4()), 
+                          'this page intentionally left blank')
 
-    assert pr_in_progress(g, TRAVIS_REPO_SLUG,
-                          'bots-life/updating-hamlit') is True
-    assert pr_in_progress(g, TRAVIS_REPO_SLUG, 'pr_does_not_exists') is False
+    assert r == 201 # created!

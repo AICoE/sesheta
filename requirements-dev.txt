@@ -1,5 +1,6 @@
 -r requirements.txt
 autopep8
 pytest
+pytest-capturelog
 pylint
 python-dotenv
