@@ -105,3 +105,4 @@ manageiq-workdir/
 **/gemnasium-manageiq.json
 sesheta_rsa*
 certs/
+travis_logs/
