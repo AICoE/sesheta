@@ -19,15 +19,44 @@
 """This is Thoth, a dependency updating bot for Open-Source Communities.
 """
 
-import uuid
+import pytest
 
 from datahub_helper import upload_to_datahub
 
+class TravisBuild():
+    def __init__(self, id, job_ids):
+        self.id = id
+        self.job_ids = job_ids
 
-def test_upload_to_datahub():
+class TravisJob():
+    def __init__(self, id, log_id, log):
+        self.id = id
+        self.log_id = log_id
+        self.log = log
+
+class TravisLog():
+    def __init__(self, id, body):
+        self.id = id
+        self.body = body
+
+
+@pytest.fixture
+def Log():
+    return TravisLog(1, 'This space intentionally left blank.')
+
+@pytest.fixture
+def Job(Log):
+    return TravisJob(1, 1, Log)
+
+
+@pytest.fixture
+def Build():
+    return TravisBuild(1, [1])
+
+
+def test_upload_to_datahub(Build, Job):
     """This test requires Red Hat intranet access"""
 
-    r = upload_to_datahub('pytest', str(uuid.uuid4()), str(uuid.uuid4()), 
-                          'this page intentionally left blank')
+    r = upload_to_datahub(Build, Job)
 
     assert r == 201 # created!
