@@ -24,7 +24,7 @@ import json
 
 import requests
 
-from configuration import DATAHUB_TRAVISCI_INDEX, DATAHUB_ENDPOINT, DATAHUB_R_CERT, DATAHUB_R_KEY, DATAHUB_W_CERT, DATAHUB_W_KEY
+from configuration import DATAHUB_TRAVISCI_INDEX, DATAHUB_ES_HOSTNAME, DATAHUB_ENDPOINT, DATAHUB_R_CERT, DATAHUB_R_KEY, DATAHUB_W_CERT, DATAHUB_W_KEY
 
 def upload_to_datahub(build, job):
     """upload_to_databub will upload the log body to datahub"""
@@ -38,8 +38,28 @@ def upload_to_datahub(build, job):
     datahub_entry['raw_log'] = job.log.body
 
     # FIXME exception handling is missing
-    r = requests.post(DATAHUB_ENDPOINT + DATAHUB_TRAVISCI_INDEX + 'log/' + str(job.log_id), 
+    r = requests.post(DATAHUB_ENDPOINT + DATAHUB_TRAVISCI_INDEX + '/log/' + str(job.log_id),
                       data=json.dumps(datahub_entry), cert=(
                           DATAHUB_W_CERT, DATAHUB_W_KEY), verify=False)
 
     return r.status_code
+
+def delete_document_by_id(_id):
+    from elasticsearch import Elasticsearch, ElasticsearchException
+
+    try:
+        es = Elasticsearch(
+            [DATAHUB_ES_HOSTNAME],
+            port=443,
+            use_ssl=True,
+            verify_certs=False,
+            client_cert=DATAHUB_W_CERT,
+            client_key=DATAHUB_W_KEY
+        )
+
+        es.delete(index=DATAHUB_TRAVISCI_INDEX,
+                  doc_type='log', id=_id)
+
+    except ElasticsearchException as ese:
+        logging.error(ese)
+        return False

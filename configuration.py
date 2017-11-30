@@ -38,8 +38,9 @@ GEMNASIUM_STATUS_URL = 'https://api.gemnasium.com/v1/projects/goern/manageiq/dep
 
 # DataHub configuration
 DATAHUB_REDHAT_INTERNAL = True
-DATAHUB_ENDPOINT = 'https://es-test-elasticsearch.ose.sbu.lab.eng.bos.redhat.com/'
-DATAHUB_TRAVISCI_INDEX = 'travisci/'
+DATAHUB_ES_HOSTNAME = 'es-test-elasticsearch.ose.sbu.lab.eng.bos.redhat.com'
+DATAHUB_ENDPOINT = 'https://'+DATAHUB_ES_HOSTNAME+'/'
+DATAHUB_TRAVISCI_INDEX = 'travisci'
 DATAHUB_CERT_PATH = str(Path.cwd()) + '/certs/'
 DATAHUB_W_CERT = DATAHUB_CERT_PATH + 'system.logging.fluentd.crt'
 DATAHUB_W_KEY = DATAHUB_CERT_PATH + 'system.logging.fluentd.key'

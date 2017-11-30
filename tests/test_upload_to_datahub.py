@@ -21,7 +21,7 @@
 
 import pytest
 
-from datahub_helper import upload_to_datahub
+from datahub_helper import upload_to_datahub, delete_document_by_id
 
 class TravisBuild():
     def __init__(self, id, job_ids):
@@ -60,3 +60,6 @@ def test_upload_to_datahub(Build, Job):
     r = upload_to_datahub(Build, Job)
 
     assert r == 201 # created!
+    
+def test_delete_document_one():
+    assert delete_document_by_id(1) == True
