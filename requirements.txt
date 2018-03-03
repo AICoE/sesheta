@@ -1,8 +1,8 @@
-tornado==4.5.2
-prometheus_client==0.0.21
+tornado==4.5.3
+prometheus_client==0.1.1
 gemfileparser==0.6.2
 semver==2.7.9
-pygithub==1.35
-gitpython==2.1.7
+pygithub==1.37
+gitpython==2.1.8
 travispy==0.3.5
-elasticsearch==5.5.1
+elasticsearch==6.1.1

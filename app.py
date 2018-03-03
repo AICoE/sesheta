@@ -68,7 +68,7 @@ class MainHandler(tornado.web.RequestHandler):
         build_status = 'check'
 
         self.render(
-            "index.html", title="Thoth - ManageIQ Dependency Bot", build_status=build_status)
+            "index.html", title="Thoth - Sesheta", build_status=build_status)
 
 class PrometheusHandler(tornado.web.RequestHandler):
     def get(self):

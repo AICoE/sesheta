@@ -1,22 +1,23 @@
-# manageiq-bot
-A ManageIQ Team Member
+# Sesheta
 
-[![Dependency Status](https://gemnasium.com/badges/github.com/goern/manageiq-bot.svg)](https://gemnasium.com/github.com/goern/manageiq-bot)
+Sesheta is a junior community team member.
+
+[![Dependency Status](https://gemnasium.com/badges/github.com/goern/sesheta.svg)](https://gemnasium.com/github.com/goern/sesheta)
 
 # Deployment
 
-The following sections describe what needs to be done to deploy the Thoth ManageIQ Dependency Bot.
+The following sections describe what needs to be done to deploy Sesheta.
 
 ## Secrets
 
 Secrets are used for varius API access, either via REST or SSH. Secrets are references by Deployments or CronJobs.
 
 ```bash
-oc create secret generic manageiq-bot \
+oc create secret generic sesheta \
  --from-literal=GEMNASIUM_API_KEY=<token> \
  --from-literal=GITHUB_ACCESS_TOKEN=<token> \
  --from-literal=THOTH_DEPENDENCY_BOT_TRAVISCI=<token>
-oc secrets new-sshauth github  --ssh-privatekey=<ssh_private_key_filename>
+oc secrets new-sshauth github --ssh-privatekey=<ssh_private_key_filename>
 ```
 
 ## BuildConfigurations and ImageStreams
@@ -24,8 +25,8 @@ oc secrets new-sshauth github  --ssh-privatekey=<ssh_private_key_filename>
 These two build configurations use the git repositories as input, during development it is advices to create corresponding binary builds.
 
 ```bash
-oc new-build --name patch-bot --to patch-bot --image-stream openshift/python:3.5 https://github.com/goern/manageiq-bot
-oc new-build --name dependencies --to dependencies --image-stream openshift/python:3.5 https://github.com/goern/manageiq-bot
+oc new-build --name patch-bot --to patch-bot --image-stream openshift/python:3.5 https://github.com/AICoE/sesheta
+oc new-build --name dependencies --to dependencies --image-stream openshift/python:3.5 https://github.com/AICoE/sesheta
 ```
 
 ## Deployments
@@ -53,7 +54,7 @@ Implemente pr_in_progress()
 
 ## Copyright
 
-Copyright (C) 2017 Red Hat Inc.
+Copyright (C) 2017,2018 Red Hat Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -62,7 +63,7 @@ the Free Software Foundation, either version 3 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
