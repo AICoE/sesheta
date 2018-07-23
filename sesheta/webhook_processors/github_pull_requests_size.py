@@ -32,7 +32,6 @@ _LOGGER = daiquiri.getLogger(__name__)
 
 def add_size_label(pullrequest: dict) -> None:
     """Add a size label to a GitHub Pull Request."""
-
     if pullrequest['title'].startswith('Automatic update of dependency'):
         return
 

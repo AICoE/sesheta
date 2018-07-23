@@ -65,10 +65,11 @@ PR_SIZE_LABELS = [
     'size/XXL'
 ]
 
+
 def calculate_pullrequest_size(pullrequest) -> str:
     """Calculate the number of additions/deletions of this PR."""
-
     return PR_SIZE_LABELS[0]
+
 
 def random_positive_emoji() -> str:
     """Pick a random positive emoji."""
