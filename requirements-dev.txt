@@ -1,5 +1,0 @@
--r requirements.txt
-autopep8
-pytest
-pylint
-python-dotenv

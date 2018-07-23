@@ -1,5 +1,0 @@
-#!/bin/bash
-
-ID_RSA=${PWD}/ssh/sesheta_rsa
-
-exec /usr/bin/ssh -o StrictHostKeyChecking=no -i $ID_RSA "$@"
