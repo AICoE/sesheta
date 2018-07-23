@@ -18,12 +18,16 @@
 """This is the Flask webhook receiver..."""
 
 
+import sys
 import logging
+
 import daiquiri
 
 from sesheta import create_application
 
 
+daiquiri.setup(__name__, outputs=(
+    daiquiri.output.Stream(sys.stdout)))
 _LOGGER = daiquiri.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
 

@@ -19,6 +19,7 @@
 """Utility methods used by handlers or processors."""
 
 
+import sys
 import os
 
 import requests
@@ -27,6 +28,8 @@ import logging
 import daiquiri
 
 
+daiquiri.setup(__name__, outputs=(
+    daiquiri.output.Stream(sys.stdout)))
 _LOGGER = daiquiri.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
 

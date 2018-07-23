@@ -18,13 +18,16 @@
 
 """This processes GitHub Reviews."""
 
+import sys
 import logging
 
 import daiquiri
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user
+from sesheta.utils import notify_channel, mattermost_username_by_github_user, add_labels
 
 
+daiquiri.setup(__name__, outputs=(
+    daiquiri.output.Stream(sys.stdout)))
 _LOGGER = daiquiri.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
 
