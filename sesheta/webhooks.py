@@ -30,8 +30,9 @@ import daiquiri
 from flask import request, Blueprint, jsonify, current_app
 from git import Repo
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user, random_positive_emoji
+from sesheta.utils import notify_channel, random_positive_emoji
 from sesheta.webhook_processors.github_reviews import *
+from sesheta.webhook_processors.github_pull_requests import *
 
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
@@ -51,17 +52,6 @@ def handle_github_open_issue(issue: dict) -> None:
 
     notify_channel(f"[{issue['user']['login']}]({issue['user']['url']}) just "
                    f"opened an issue: [{issue['title']}]({issue['html_url']})... :glowstick:")
-
-
-def handle_github_open_pullrequest(pullrequest: dict) -> None:
-    """Will handle with care."""
-    _LOGGER.info(f"A Pull Request has been opened: {pullrequest['url']}")
-
-    if pullrequest['title'].startswith('Automatic update of dependency'):
-        return
-
-    notify_channel(f"_{mattermost_username_by_github_user(pullrequest['user']['login'])}_ just "
-                   f"opened a pull request: '[{pullrequest['title']}]({pullrequest['html_url']})'...")
 
 
 def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> None:
@@ -111,7 +101,7 @@ def handle_github_webhook():
 
         if event == 'pull_request':
             if action == 'opened':
-                handle_github_open_pullrequest(payload['pull_request'])
+                process_github_open_pullrequest(payload['pull_request'])
             elif action == 'closed':
                 if payload['pull_request']['merged']:
                     handle_github_open_pullrequest_merged_successfully(

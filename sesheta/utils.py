@@ -56,6 +56,20 @@ POSITIVE_MATTERMOST_EMOJIS = [
 ]
 
 
+PR_SIZE_LABELS = [
+    'size/XS',
+    'size/S',
+    'size/M',
+    'size/L',
+    'size/XL',
+    'size/XXL'
+]
+
+def calculate_pullrequest_size(pullrequest) -> str:
+    """Calculate the number of additions/deletions of this PR."""
+
+    return PR_SIZE_LABELS[0]
+
 def random_positive_emoji() -> str:
     """Pick a random positive emoji."""
     return random.choice(POSITIVE_MATTERMOST_EMOJIS)

@@ -2,6 +2,25 @@
 
 Sesheta is a junior community team member. We will reincarnate it over the next weeks...
 
+# Source Operations
+
+## Labels
+
+The following sections describe what Sesheta does with regards to source operations.
+
+### Pull/Merge Request Size Labels
+
+Each Pull/Merge Request will be assigned a size label. Labels are applied based on
+the total number of lines of changes (additions and deletions):
+
+* size/XS:	0-9
+* size/S:	10-29
+* size/M:	30-99
+* size/L	100-499
+* size/XL:	500-999
+* size/XXL:	1000+
+
+
 ## Deploying
 
 To deploy sesheta on an OpenShift cluster use the following Ansible command with required parameters:
