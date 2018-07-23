@@ -26,10 +26,8 @@ import daiquiri
 from sesheta import create_application
 
 
-daiquiri.setup(__name__, outputs=(
-    daiquiri.output.Stream(sys.stdout)))
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 application = create_application()

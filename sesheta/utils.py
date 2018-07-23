@@ -28,10 +28,8 @@ import logging
 import daiquiri
 
 
-daiquiri.setup(__name__, outputs=(
-    daiquiri.output.Stream(sys.stdout)))
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)

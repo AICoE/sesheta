@@ -34,10 +34,8 @@ from sesheta.utils import notify_channel, mattermost_username_by_github_user
 from sesheta.webhook_processors.github_reviews import *
 
 
-daiquiri.setup(__name__, outputs=(
-    daiquiri.output.Stream(sys.stdout)))
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 webhooks = Blueprint('webhook', __name__, url_prefix='')

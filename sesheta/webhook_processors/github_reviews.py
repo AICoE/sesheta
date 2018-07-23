@@ -26,10 +26,8 @@ import daiquiri
 from sesheta.utils import notify_channel, mattermost_username_by_github_user, add_labels
 
 
-daiquiri.setup(__name__, outputs=(
-    daiquiri.output.Stream(sys.stdout)))
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
