@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: sesheta-imagestream
+  thoth: 0.1.0
+metadata:
+  name: sesheta-imagestream
+  annotations:
+    description: >
+      This is sesheta ImageStream, this template is meant to be used by Bots, but could also be used by humans...
+    openshift.io/display-name: sesheta ImageStream
+    version: 2.0.0-dev
+    tags: poc,thoth,ai-stacks,sesheta
+    template.openshift.io/documentation-url: https://github.com/thoth-station/sesheta/
+    template.openshift.io/long-description: This is sesheta used for automatic package releases and updates.
+    template.openshift.io/provider-display-name: Red Hat, Inc.
+
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: sesheta
+      name: sesheta-webhooks
+    spec:
+      lookupPolicy:
+        local: true
+      tags:
+        - name: latest
+          importPolicy: {}
+          referencePolicy:
+            type: ""

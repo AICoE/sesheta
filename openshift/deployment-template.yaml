@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: sesheta-buildconfig
+  thoth: 0.1.0
+metadata:
+  name: sesheta-deployment
+  annotations:
+    description: >
+      This is sesheta Webhooks Deployment, this template is meant to be used by Bots,
+      but could also be used by humans...
+    openshift.io/display-name: sesheta BuildConfig
+    version: 2.0.0-dev
+    tags: poc,thoth,ai-stacks,sesheta
+    template.openshift.io/documentation-url: https://github.com/thoth-station/sesheta/
+    template.openshift.io/long-description: This is sesheta used for automatic package releases and updates.
+    template.openshift.io/provider-display-name: Red Hat, Inc.
+
+objects:
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: sesheta-webhooks
+      labels:
+        app: sesheta
+        component: webhooks
+    spec:
+      to:
+        kind: Service
+        name: sesheta-webhooks
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      labels:
+        app: sesheta
+        component: webhooks
+      name: sesheta-webhooks
+    spec:
+      ports:
+        - name: 8080-tcp
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        app: sesheta
+        component: webhooks
+        deploymentconfig: sesheta-webhooks
+
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      labels:
+        app: sesheta
+        component: webhooks
+      name: sesheta-webhooks
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 5
+      selector:
+        app: sesheta
+        component: webhooks
+        deploymentconfig: sesheta-webhooks
+      template:
+        metadata:
+          labels:
+            app: sesheta
+            component: webhooks
+            deploymentconfig: sesheta-webhooks
+        spec:
+          containers:
+            - name: sesheta-webhooks
+              image: sesheta-webhooks:latest
+              env:
+                - name: SESHETA_GITHUB_WEBHOOK_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: sesheta-secret
+                      key: github-webhook-secret
+                - name: SESHETA_MATTERMOST_ENDPOINT_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: sesheta-secret
+                      key: mattermost-endpoint-url
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "125m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
+      test: false
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - sesheta-webhooks
+            from:
+              kind: ImageStreamTag
+              name: sesheta-webhooks:latest
