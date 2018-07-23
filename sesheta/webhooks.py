@@ -30,7 +30,7 @@ import daiquiri
 from flask import request, Blueprint, jsonify, current_app
 from git import Repo
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user
+from sesheta.utils import notify_channel, mattermost_username_by_github_user, random_positive_emoji
 from sesheta.webhook_processors.github_reviews import *
 
 
@@ -46,6 +46,7 @@ def handle_github_open_issue(issue: dict) -> None:
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
     if issue['title'].startswith('Automatic update of dependency'):
+        _LOGGER.info(f"{issue['url']} is an automatic update of dependencies, not sending notification")
         return
 
     notify_channel(f"[{issue['user']['login']}]({issue['user']['url']}) just "
@@ -72,7 +73,8 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
         return
 
     notify_channel(
-        f":tada: Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
+        random_positive_emoji() +
+        f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
         f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
 
 

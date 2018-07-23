@@ -21,6 +21,7 @@
 
 import sys
 import os
+import random
 
 import requests
 import logging
@@ -45,6 +46,18 @@ GITHUB_MATTERMOST_MAPPING = {
     "vpavlin": "vpavlin"
 }
 
+POSITIVE_MATTERMOST_EMOJIS = [
+    ':tada:',
+    ':champagne:',
+    ':party_parrot:',
+    ':falloutboythumbsup:',
+    ':thumbsup:',
+    ':+1:'
+] 
+
+
+def random_positive_emoji() -> str:
+    return random.choice(POSITIVE_MATTERMOST_EMOJIS)
 
 def mattermost_username_by_github_user(github: str) -> str:
     """Map a GitHub User to a Mattermost User."""
