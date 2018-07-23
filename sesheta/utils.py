@@ -53,11 +53,13 @@ POSITIVE_MATTERMOST_EMOJIS = [
     ':falloutboythumbsup:',
     ':thumbsup:',
     ':+1:'
-] 
+]
 
 
 def random_positive_emoji() -> str:
+    """Pick a random positive emoji."""
     return random.choice(POSITIVE_MATTERMOST_EMOJIS)
+
 
 def mattermost_username_by_github_user(github: str) -> str:
     """Map a GitHub User to a Mattermost User."""

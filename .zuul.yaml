@@ -1,0 +1,11 @@
+- project:
+    check:
+      jobs:
+        - linters
+    gate:
+      queue: sesheta
+      jobs:
+        - linters
+    kebechet-auto-gate:
+      jobs:
+        - linters
