@@ -82,7 +82,7 @@ def handle_github_webhook():
     sha, signature = signature.split('=')
 
     secret = str.encode(current_app.config.get(
-        'KEBECHET_GITHUB_WEBHOOK_SECRET'))
+        'SESHETA_GITHUB_WEBHOOK_SECRET'))
 
     hashhex = hmac.new(secret, request.data, digestmod='sha1').hexdigest()
 
