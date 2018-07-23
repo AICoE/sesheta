@@ -19,6 +19,7 @@
 """Utility methods used by handlers or processors."""
 
 
+import sys
 import os
 
 import requests
@@ -27,8 +28,8 @@ import logging
 import daiquiri
 
 
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)

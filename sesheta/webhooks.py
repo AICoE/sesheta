@@ -20,6 +20,7 @@
 
 
 import os
+import sys
 import logging
 import hmac
 import json
@@ -33,8 +34,8 @@ from sesheta.utils import notify_channel, mattermost_username_by_github_user
 from sesheta.webhook_processors.github_reviews import *
 
 
+daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-_LOGGER.setLevel(logging.DEBUG)
 
 
 webhooks = Blueprint('webhook', __name__, url_prefix='')
@@ -102,7 +103,10 @@ def handle_github_webhook():
                 action = payload['action']
         except KeyError as exc:
             _LOGGER.exception(exc)
-            
+
+        _LOGGER.debug(
+            f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}, action: {action}")
+
         if event == 'pull_request':
             if action == 'opened':
                 handle_github_open_pullrequest(payload['pull_request'])
