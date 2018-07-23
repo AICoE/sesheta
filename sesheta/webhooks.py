@@ -104,6 +104,9 @@ def handle_github_webhook():
         except KeyError as exc:
             _LOGGER.exception(exc)
 
+        _LOGGER.debug(
+            f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}, action: {action}")
+
         if event == 'pull_request':
             if action == 'opened':
                 handle_github_open_pullrequest(payload['pull_request'])
