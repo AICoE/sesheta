@@ -119,7 +119,7 @@ def handle_github_webhook():
             elif action == 'review_requested':
                 process_github_pull_request_review_requested(
                     payload['pull_request'])
-        elif event == 'issue':
+        elif event == 'issues':
             if payload['action'] == 'opened':
                 handle_github_open_issue(payload['issue'])
         elif event == 'pull_request_review':
