@@ -78,6 +78,13 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
 @webhooks.route('/github', methods=['POST'])
 def handle_github_webhook():
     """Entry point for github webhook."""
+    _LOGGER.debug(
+        f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}")
+
+    event = request.headers.get('X-GitHub-Event', 'ping')
+    if event == 'ping':
+        return jsonify({'msg': 'pong'})
+
     signature = request.headers.get('X-Hub-Signature')
     sha, signature = signature.split('=')
 
@@ -90,27 +97,23 @@ def handle_github_webhook():
         payload = request.json
 
         # this will give use the event type...
-        event_type = payload['action']
-        # TODO lets use the X-GitHub-Event too
+        action = payload['action']
 
-        if 'pull_request' in event_type:
-            if payload['action'] == 'opened':
+        if event == 'pull_request':
+            if action == 'opened':
                 handle_github_open_pullrequest(payload['pull_request'])
-            elif payload['action'] == 'closed':
+            elif action == 'closed':
                 if payload['pull_request']['merged']:
                     handle_github_open_pullrequest_merged_successfully(
                         payload['pull_request'])
-        elif 'issue' in event_type:
+            elif action == 'review_requested':
+                process_github_pull_request_review_requested(
+                    payload['pull_request'])
+        elif event == 'issue':
             if payload['action'] == 'opened':
                 handle_github_open_issue(payload['issue'])
-        elif 'pull_request_review' in event_type:
+        elif event == 'pull_request_review':
             process_github_pull_request_review(
-                payload['pull_request'], payload['review'])
-        elif 'review_requested' in event_type:
-            process_github_pull_request_review_requested(
-                payload['pull_request'])
-        elif 'submitted' in event_type:
-            process_github_pull_request_review_submitted(
                 payload['pull_request'], payload['review'])
         else:
             _LOGGER.debug(

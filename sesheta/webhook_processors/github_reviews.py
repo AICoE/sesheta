@@ -31,7 +31,15 @@ _LOGGER.setLevel(logging.DEBUG)
 
 def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
     """Will handle with care."""
-    return
+    if review['state'] == 'comment':
+        notify_channel(
+            f"_{mattermost_username_by_github_user(review['user']['login'])}_ submitted a review:comment"
+            f" for Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
+    elif review['state'] == 'approved':
+        notify_channel(
+            f":white_check_mark: _{mattermost_username_by_github_user(review['user']['login'])}_ approved"
+            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
+        add_labels(pullrequest['url'], ['approved'])
 
 
 def process_github_pull_request_review_requested(

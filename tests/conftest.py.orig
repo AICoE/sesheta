@@ -24,7 +24,7 @@ import pytest
 
 
 @pytest.fixture()
-def pull_request_review_submitted():  # Ignore PyDocStyleBear
+def pull_request_review_submitted():
     with open('./fixtures/pull_request_review_submitted.json') as f:
         data = json.load(f)
 
@@ -32,7 +32,7 @@ def pull_request_review_submitted():  # Ignore PyDocStyleBear
 
 
 @pytest.fixture()
-def pull_request_review_requested():  # Ignore PyDocStyleBear
+def pull_request_review_requested():
     with open('./fixtures/pull_request_review_requested.json') as f:
         data = json.load(f)
 

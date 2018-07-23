@@ -55,7 +55,7 @@ def mattermost_username_by_github_user(github: str) -> str:
         _LOGGER.exception(exp)
 
     if not mattermost:
-        mattermost = github
+        return github
 
     return f'@{mattermost}'
 
@@ -72,3 +72,8 @@ def notify_channel(message: str) -> None:
     r = requests.post(ENDPOINT_URL, json=payload)
     if r.status_code != 200:
         _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
+
+
+def add_labels(pull_request_url: str, labels: list) -> None:
+    """Add labels to a GitHub Pull Request."""
+    return

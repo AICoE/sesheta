@@ -18,22 +18,20 @@
 
 """test..."""
 
-import json
 
-import pytest
-
-
-@pytest.fixture()
-def pull_request_review_submitted():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_review_submitted.json') as f:
-        data = json.load(f)
-
-    return data
+from sesheta.webhook_processors.github_reviews import *
 
 
-@pytest.fixture()
-def pull_request_review_requested():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_review_requested.json') as f:
-        data = json.load(f)
+_REVIEW_STATES = [
+    'approved', 'commented'
+]
 
-    return data
+
+class TestReviews(object):
+    def test_handle_github_pull_request_review_requested(self, pull_request_review_requested):
+        assert pull_request_review_requested
+        assert pull_request_review_requested['action'] == 'review_requested'
+        assert 'requested_reviewers' in pull_request_review_requested.keys()
+
+        process_github_pull_request_review_requested(
+            pull_request_review_requested['pull_request'])
