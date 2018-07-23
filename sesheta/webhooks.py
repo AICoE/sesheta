@@ -95,10 +95,14 @@ def handle_github_webhook():
 
     if hmac.compare_digest(hashhex, signature):
         payload = request.json
+        action = ''
 
-        # this will give use the event type...
-        action = payload['action']
-
+        try:
+            if 'action' in payload.keys():
+                action = payload['action']
+        except KeyError as exc:
+            _LOGGER.exception(exc)
+            
         if event == 'pull_request':
             if action == 'opened':
                 handle_github_open_pullrequest(payload['pull_request'])
