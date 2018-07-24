@@ -10,6 +10,7 @@ flask = "*"
 gunicorn = "*"
 igitt = "*"
 click = "==6.6"
+pygithub = "*"
 
 [dev-packages]
 pytest = "*"
