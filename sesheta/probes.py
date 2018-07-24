@@ -16,28 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This processes GitHub Pull Requests."""
-
-import sys
-import logging
-
-import daiquiri
-
-from sesheta.utils import calculate_pullrequest_size, set_size
+"""This will answer OpenShift Readyness and Liveness probes."""
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
-_LOGGER = daiquiri.getLogger(__name__)
+from flask import request, Blueprint, jsonify
 
 
-def add_size_label(pullrequest: dict) -> None:
-    """Add a size label to a GitHub Pull Request."""
-    if pullrequest['title'].startswith('Automatic update of dependency'):
-        return
+probes = Blueprint('probes', __name__, url_prefix='/_healthz')
 
-    sizeLabel = calculate_pullrequest_size(pullrequest)
 
-    _LOGGER.debug(f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
-
-    if sizeLabel:
-        set_size(pullrequest['url'], sizeLabel)
+@probes.route('/', methods=['GET'])
+def readyness():
+    """easy."""
+    return jsonify({"status": "ok!"}), 200

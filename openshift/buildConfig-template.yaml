@@ -39,8 +39,9 @@ objects:
       source:
         type: Git
         git:
-          ref: "${GITHUB_REF}"
-          uri: "${GITHUB_URL}"
+          ref: ${GITHUB_REF}
+          uri: ${GITHUB_URL}
+        contextDir: ${GITHUB_CONTEXT_DIR}
       strategy:
         type: Source
         sourceStrategy:
@@ -63,11 +64,17 @@ parameters:
     name: GITHUB_URL
     value: 'https://github.com/AICoE/sesheta'
 
-  - description: Git repository for Thoth's Graph Sync Job
+  - description: Git reference for Thoth's sesheta
     displayName: Thoth sesheta git reference
     required: true
     name: GITHUB_REF
     value: 'master'
+
+  - description: Context directory
+    displayName: Context directory
+    required: true
+    name: GITHUB_CONTEXT_DIR
+    value: ''
 
   - description: Tag of the output ImageStream the resulting container image should go to
     displayName: ImageStream Tag

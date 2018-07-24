@@ -32,7 +32,8 @@ import daiquiri
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
 
-
+DEBUG = bool(os.getenv('DEBUG', True))
+SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
 ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)
 
 GITHUB_MATTERMOST_MAPPING = {
@@ -68,7 +69,24 @@ PR_SIZE_LABELS = [
 
 def calculate_pullrequest_size(pullrequest) -> str:
     """Calculate the number of additions/deletions of this PR."""
-    return PR_SIZE_LABELS[0]
+    try:
+        lines_changes = pullrequest['additions'] + pullrequest['deletions']
+
+        if lines_changes > 1000:
+            return 'size/XXL'
+        elif lines_changes >= 500 and lines_changes <= 999:
+            return 'size/XL'
+        elif lines_changes >= 100 and lines_changes <= 499:
+            return 'size/L'
+        elif lines_changes >= 30 and lines_changes <= 99:
+            return 'size/M'
+        elif lines_changes >= 10 and lines_changes <= 29:
+            return 'size/S'
+        elif lines_changes >= 0 and lines_changes <= 9:
+            return 'size/XS'
+    except KeyError as exc:
+        _LOGGER.exception(exc)
+        return None
 
 
 def random_positive_emoji() -> str:
@@ -107,4 +125,15 @@ def notify_channel(message: str) -> None:
 
 def add_labels(pull_request_url: str, labels: list) -> None:
     """Add labels to a GitHub Pull Request."""
-    return
+    _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
+
+    requests.post(f"{pull_request_url}/labels", labels)
+
+
+def set_size(pull_request_url: str, sizeLabel: str) -> None:
+    """Set the size labels of a GitHub Pull Request."""
+    # TODO check if some size label is set, if so, change it to the sizeLabel
+
+    _LOGGER.debug(f"adding size label '{sizeLabel}' to {pull_request_url}")
+
+    requests.post(f"{pull_request_url}/labels", [sizeLabel])

@@ -27,6 +27,7 @@ from .utils import notify_channel, mattermost_username_by_github_user
 from .webhooks import webhooks
 from .metrics import metrics
 from .humans import website
+from .probes import probes
 
 
 __name__ = 'sesheta'
@@ -41,6 +42,7 @@ def create_application():
         'KEBECHET_GITHUB_WEBHOOK_SECRET')
     app.register_blueprint(webhooks)
     app.register_blueprint(metrics)
+    app.register_blueprint(probes)
     app.register_blueprint(website)
 
     return(app)
