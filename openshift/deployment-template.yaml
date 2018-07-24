@@ -17,6 +17,15 @@ metadata:
     template.openshift.io/provider-display-name: Red Hat, Inc.
 
 objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: sesheta-configmap
+      labels:
+        app: sesheta
+    data:
+      sesheta-verbose: ${SESHETA_VERBOSE}
+
   - kind: Route
     apiVersion: v1
     metadata:
@@ -103,3 +112,10 @@ objects:
             from:
               kind: ImageStreamTag
               name: sesheta-webhooks:latest
+
+parameters:
+  - description: Sesheta verbose mode.
+    displayName: Sesheta verbose
+    required: true
+    name: sesheta_VERBOSE
+    value: "1"
