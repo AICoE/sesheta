@@ -23,6 +23,7 @@ import sys
 import os
 import random
 
+import json
 import requests
 import logging
 
@@ -127,7 +128,10 @@ def add_labels(pull_request_url: str, labels: list) -> None:
     """Add labels to a GitHub Pull Request."""
     _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
 
-    requests.post(f"{pull_request_url}/labels", labels)
+    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
+
+    requests.post(f"{pull_request_url}/labels",
+                  headers=headers,  data=json.dumps(labels))
 
 
 def set_size(pull_request_url: str, sizeLabel: str) -> None:
@@ -136,4 +140,7 @@ def set_size(pull_request_url: str, sizeLabel: str) -> None:
 
     _LOGGER.debug(f"adding size label '{sizeLabel}' to {pull_request_url}")
 
-    requests.post(f"{pull_request_url}/labels", [sizeLabel])
+    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
+
+    requests.post(f"{pull_request_url}/labels",
+                  headers=headers,  data=json.dumps([sizeLabel]))
