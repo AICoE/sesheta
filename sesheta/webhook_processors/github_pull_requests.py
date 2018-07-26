@@ -18,10 +18,12 @@
 
 """This processes GitHub Pull Requests."""
 
-import sys
+
 import logging
 
+
 import daiquiri
+
 
 from sesheta.utils import notify_channel, mattermost_username_by_github_user
 

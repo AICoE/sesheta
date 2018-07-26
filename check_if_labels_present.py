@@ -25,9 +25,6 @@ import logging
 import daiquiri
 import sesheta
 
-from github import Github
-from github import UnknownObjectException
-
 from sesheta.common import init_github_interface, ensure_label_present
 
 

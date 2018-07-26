@@ -18,10 +18,11 @@
 
 """This processes GitHub Pull Requests."""
 
-import sys
 import logging
 
+
 import daiquiri
+
 
 from sesheta.utils import calculate_pullrequest_size, set_size
 
@@ -37,7 +38,8 @@ def add_size_label(pullrequest: dict) -> None:
 
     sizeLabel = calculate_pullrequest_size(pullrequest)
 
-    _LOGGER.debug(f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
+    _LOGGER.debug(
+        f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
 
     if sizeLabel:
         set_size(pullrequest['url'], sizeLabel)

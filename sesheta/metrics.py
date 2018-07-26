@@ -19,13 +19,7 @@
 """This will handle all the GitHub webhooks."""
 
 
-import os
-import logging
-import json
-
-import daiquiri
-
-from flask import request, Blueprint, jsonify
+from flask import Blueprint, jsonify
 
 
 metrics = Blueprint('metrics', __name__, url_prefix='/metrics')

@@ -19,8 +19,6 @@
 """This will handle all the GitHub webhooks."""
 
 
-import os
-import sys
 import logging
 import hmac
 import json
@@ -28,7 +26,6 @@ import json
 import daiquiri
 
 from flask import request, Blueprint, jsonify, current_app
-from git import Repo
 
 from sesheta.utils import notify_channel, random_positive_emoji
 from sesheta.webhook_processors.github_reviews import *
@@ -47,7 +44,8 @@ def handle_github_open_issue(issue: dict) -> None:
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
     if issue['title'].startswith('Automatic update of dependency'):
-        _LOGGER.info(f"{issue['url']} is an automatic update of dependencies, not sending notification")
+        _LOGGER.info(
+            f"{issue['url']} is an automatic update of dependencies, not sending notification")
         return
 
     notify_channel(f"[{issue['user']['login']}]({issue['user']['url']}) just "

@@ -19,7 +19,7 @@
 """This will answer OpenShift Readyness and Liveness probes."""
 
 
-from flask import request, Blueprint, jsonify
+from flask import Blueprint, jsonify
 
 
 probes = Blueprint('probes', __name__, url_prefix='/_healthz')

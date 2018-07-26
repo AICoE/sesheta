@@ -19,7 +19,6 @@
 """Utility methods used by handlers or processors."""
 
 
-import sys
 import os
 import random
 

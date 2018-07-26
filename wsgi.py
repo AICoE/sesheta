@@ -18,7 +18,6 @@
 """This is the Flask webhook receiver..."""
 
 
-import sys
 import logging
 
 import daiquiri
