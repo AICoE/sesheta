@@ -32,7 +32,7 @@ class TestPullRequests(object):  # Ignore PyDocStyleBear
         assert calculate_pullrequest_size(
             pull_request_review_requested['pull_request']) == 'size/XS'
 
-    def test_review_approved(self, pull_request_review_submitted_approved):
+    def test_review_approved(self, pull_request_review_submitted_approved):  # Ignore PyDocStyleBear
         assert pull_request_review_submitted_approved
         assert pull_request_review_submitted_approved['action'] == 'submitted'
 
