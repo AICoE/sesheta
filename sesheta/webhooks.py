@@ -27,7 +27,7 @@ import daiquiri
 
 from flask import request, Blueprint, jsonify, current_app
 
-from sesheta.utils import notify_channel, random_positive_emoji
+from sesheta.utils import notify_channel, random_positive_emoji, calculate_pullrequest_size, set_size
 from sesheta.webhook_processors.github_reviews import *
 from sesheta.webhook_processors.github_pull_requests import *
 
@@ -66,6 +66,20 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
         f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
 
 
+def _add_size_label(pullrequest: dict) -> None:
+    """Add a size label to a GitHub Pull Request."""
+    if pullrequest['title'].startswith('Automatic update of dependency'):
+        return
+
+    sizeLabel = calculate_pullrequest_size(pullrequest)
+
+    _LOGGER.debug(
+        f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
+
+    if sizeLabel:
+        set_size(pullrequest['_links']['issue']['href'], sizeLabel)
+
+
 @webhooks.route('/github', methods=['POST'])
 def handle_github_webhook():
     """Entry point for github webhook."""
@@ -98,6 +112,8 @@ def handle_github_webhook():
             f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}, action: {action}")
 
         if event == 'pull_request':
+            _add_size_label(payload['pull_request'])
+
             if action == 'opened':
                 process_github_open_pullrequest(payload['pull_request'])
             elif action == 'closed':
