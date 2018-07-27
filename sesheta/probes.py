@@ -26,6 +26,6 @@ probes = Blueprint('probes', __name__, url_prefix='/_healthz')
 
 
 @probes.route('/', methods=['GET'])
-def readyness():
+def readyness():  # pragma: no cover
     """easy."""
     return jsonify({"status": "ok!"}), 200

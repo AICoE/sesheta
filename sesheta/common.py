@@ -40,7 +40,7 @@ DO_NOT_MERGE_LABELS = ['do-not-merge',
                        ]
 
 
-def init_github_interface(SESHETA_GITHUB_ACCESS_TOKEN):
+def init_github_interface(SESHETA_GITHUB_ACCESS_TOKEN):  # pragma: no cover
     """init_github_interface will read the configuration and return initilalized github and org objects."""
     github = Github(SESHETA_GITHUB_ACCESS_TOKEN)
 
@@ -60,7 +60,7 @@ def init_github_interface(SESHETA_GITHUB_ACCESS_TOKEN):
     return github, org, GITHUB_ORGANIZATION, GITHUB_REPOSITORIES, DEFAULT_LABELS
 
 
-def ensure_label_present(repo, name, color, current_labels, description=''):
+def ensure_label_present(repo, name, color, current_labels, description=''):  # pragma: no cover
     """Ensure the given repo has the label with the right color."""
     present_labels = []
 
@@ -82,7 +82,7 @@ def ensure_label_present(repo, name, color, current_labels, description=''):
         _LOGGER.debug(f"label '{name}' was present")
 
 
-def get_labels(pr) -> list:
+def get_labels(pr) -> list:  # pragma: no cover
     """Extract a list of strings from github.PaginatedList.PaginatedList of github.Label.Label."""
     labels = []
 

@@ -36,6 +36,7 @@ DEBUG = bool(os.getenv('DEBUG', True))
 SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
 ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)
 
+# pragma: no cover
 GITHUB_MATTERMOST_MAPPING = {
     "goern": "goern",
     "fridex": "fridolin",
@@ -47,16 +48,18 @@ GITHUB_MATTERMOST_MAPPING = {
     "vpavlin": "vpavlin"
 }
 
+# pragma: no cover
 POSITIVE_MATTERMOST_EMOJIS = [
     ':tada:',
     ':champagne:',
     ':party_parrot:',
     ':falloutboythumbsup:',
     ':thumbsup:',
-    ':+1:'
+    ':+1:',
+    ':confetti_ball:'
 ]
 
-
+# pragma: no cover
 PR_SIZE_LABELS = [
     'size/XS',
     'size/S',
@@ -109,7 +112,7 @@ def mattermost_username_by_github_user(github: str) -> str:
     return f'@{mattermost}'
 
 
-def notify_channel(message: str) -> None:
+def notify_channel(message: str) -> None:  # pragma: no cover
     """Send message to Mattermost Channel."""
     if ENDPOINT_URL is None:
         _LOGGER.error('No Mattermost incoming webhook URL supplied!')
@@ -123,7 +126,7 @@ def notify_channel(message: str) -> None:
         _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
 
 
-def add_labels(pull_request_url: str, labels: list) -> None:
+def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
     """Add labels to a GitHub Pull Request."""
     _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
 
@@ -133,7 +136,7 @@ def add_labels(pull_request_url: str, labels: list) -> None:
                   headers=headers,  data=json.dumps(labels))
 
 
-def set_size(pull_request_url: str, sizeLabel: str) -> None:
+def set_size(pull_request_url: str, sizeLabel: str) -> None:  # pragma: no cover
     """Set the size labels of a GitHub Pull Request."""
     # TODO check if some size label is set, if so, change it to the sizeLabel
 

@@ -19,11 +19,14 @@
 """This will handle all the GitHub webhooks."""
 
 
+import os
 import logging
 import hmac
 import json
+import re
 
 import daiquiri
+import requests
 
 from flask import request, Blueprint, jsonify, current_app
 
@@ -34,12 +37,17 @@ from sesheta.webhook_processors.github_pull_requests import *
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
+_RELATED_REGEXP = r"\w+:\ \#([0-9]+)"
+_DRY_RUN = os.environ.get('SESHETA_DRY_RUN', False)
+_SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
+_GIT_API_REQUEST_HEADERS = {
+    'Authorization': 'token %s' % _SESHETA_GITHUB_ACCESS_TOKEN}
 
 
 webhooks = Blueprint('webhook', __name__, url_prefix='')
 
 
-def handle_github_open_issue(issue: dict) -> None:
+def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
     """Will handle with care."""
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
@@ -52,23 +60,127 @@ def handle_github_open_issue(issue: dict) -> None:
                    f"opened an issue: [{issue['title']}]({issue['html_url']})... :glowstick:")
 
 
-def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> None:
+def eligible_release_pullrequest(pullrequest: dict) -> bool:
+    """Check if the merged Pull Request is eligible to trigger a release."""
+    # check if we have the 'bots' label
+    try:
+        if not any(label.get('name', None) == 'bot' for label in pullrequest['labels']):
+            _LOGGER.debug(
+                f"No 'bot' label on Release Pull Request: '{pullrequest['title']}', not eligible for release!")
+            return False
+    except KeyError as exc:
+        return False
+
+    # check if Kebechet was the author pullrequest['user']['login']
+    if pullrequest['user']['login'] != 'sesheta':
+        _LOGGER.debug(
+            f"Author of Release Pull Request: '{pullrequest['title']}' is not 'Sesheta', not eligible for release!")
+        return False
+
+    return True
+
+
+def get_release_issue(pullrequest: dict) -> int:
+    """Figure out which Issue is related to this Release Pull Request."""
+    try:
+        # TODO maybe we need to split the body by \n and process each line?!
+        if pullrequest['body'].upper().startswith('RELATED'):
+            related, issue = pullrequest['body'].split('#')
+            return int(issue)  # FIXME this might fail
+    except KeyError as exc:
+        return None
+
+    return None
+
+
+def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> None:  # pragma: no cover
     """Will handle with care."""
     _LOGGER.info(
-        f"A Pull Request has been successfully merged: {pullrequest}")
+        f"A Pull Request has been successfully merged: '{pullrequest['title']}'")
 
+    # we simply not notify the DevOps crew about atomated dependency updates
     if pullrequest['title'].startswith('Automatic update of dependency'):
         return
 
-    notify_channel(
-        random_positive_emoji() +
-        f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
-        f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
+    # otherwise we notify of merge
+    if not _DRY_RUN:
+        notify_channel(
+            random_positive_emoji() +
+            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
+            f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
+
+    # and we check if we should create a release...
+    if pullrequest['title'].startswith('Release of'):
+        if not eligible_release_pullrequest(pullrequest):
+            _LOGGER.warning(
+                f"Merged Release Pull Request: '{pullrequest['title']}', not eligible for release!")
+            return
+
+        commit_hash = pullrequest['merge_commit_sha']
+        release_issue = get_release_issue(pullrequest)
+        # TODO this could use a try-except
+        release = pullrequest['head']['ref'][1:]
+
+        # tag
+        _LOGGER.info(
+            f"Tagging release {release}: hash {commit_hash}.")
+
+        tag = {
+            "tag": str(release),
+            "message": f"v{release}\n",
+            "object": str(commit_hash),
+            "type": "commit"
+        }
+
+        r = requests.post(f"{pullrequest['base']['repo']['url']}/git/tags",
+                          headers=_GIT_API_REQUEST_HEADERS,  data=json.dumps(tag))
+
+        if r.status_code == 201:
+            tag_sha = r.json()['sha']
+
+            tag_ref = {
+                "ref": f"refs/tags/{release}",
+                "sha": f"{tag_sha}"
+            }
+
+            requests.post(f"{pullrequest['base']['repo']['url']}/git/refs",
+                          headers=_GIT_API_REQUEST_HEADERS,  data=json.dumps(tag_ref))
+
+        # comment on issue
+        _LOGGER.info(
+            f"Commenting on {release_issue} that we tagged {release} on hash {commit_hash}.")
+
+        comment = {
+            "body": f"I have tagged commit [{commit_hash}](https://github.com/thoth-station/srcops-testing/commit/{commit_hash}) as release {release} :+1:"
+        }
+
+        requests.post(f"{pullrequest['base']['repo']['url']}/issues/{release_issue}/comments",
+                      headers=_GIT_API_REQUEST_HEADERS,  data=json.dumps(comment))
+
+        # close issue
+        _LOGGER.info(
+            f"Closing {release_issue}.")
+
+        requests.patch(f"{pullrequest['base']['repo']['url']}/issues/{release_issue}",
+                       headers=_GIT_API_REQUEST_HEADERS,  data=json.dumps({"state": "closed"}))
+
+        if not _DRY_RUN:
+            notify_channel(
+                f" I have tagged {commit_hash} to be release {release} of"
+                f" [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) " +
+                random_positive_emoji())
+
+        # happy! 💕
+
+        return
 
 
-def _add_size_label(pullrequest: dict) -> None:
+def _add_size_label(pullrequest: dict) -> None:  # pragma: no cover
     """Add a size label to a GitHub Pull Request."""
     if pullrequest['title'].startswith('Automatic update of dependency'):
+        return
+
+    if pullrequest['state'] == 'closed':
         return
 
     sizeLabel = calculate_pullrequest_size(pullrequest)
@@ -77,15 +189,14 @@ def _add_size_label(pullrequest: dict) -> None:
         f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
 
     if sizeLabel:
+        # TODO check if there is a size label, if it is the same: skip
+        # otherwise update
         set_size(pullrequest['_links']['issue']['href'], sizeLabel)
 
 
 @webhooks.route('/github', methods=['POST'])
-def handle_github_webhook():
+def handle_github_webhook():  # pragma: no cover
     """Entry point for github webhook."""
-    _LOGGER.debug(
-        f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}")
-
     event = request.headers.get('X-GitHub-Event', 'ping')
     if event == 'ping':
         return jsonify({'msg': 'pong'})
@@ -109,7 +220,7 @@ def handle_github_webhook():
             _LOGGER.exception(exc)
 
         _LOGGER.debug(
-            f"Received a webhook: event: {request.headers.get('X-GitHub-Event')}, action: {action}")
+            f"Received a webhook: event: {event}, action: {action}.")
 
         if event == 'pull_request':
             _add_size_label(payload['pull_request'])
@@ -129,9 +240,7 @@ def handle_github_webhook():
         elif event == 'pull_request_review':
             process_github_pull_request_review(
                 payload['pull_request'], payload['review'])
-        else:
-            _LOGGER.debug(
-                f"Received a github webhook {json.dumps(request.json)}")
+
     else:
         _LOGGER.error(
             f"Webhook secret mismatch: me: {hashhex} != them: {signature}")

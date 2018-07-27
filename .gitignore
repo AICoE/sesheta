@@ -102,9 +102,7 @@ ENV/
 # VSCode
 .vscode/*
 
-manageiq-workdir/
-**/gemnasium-manageiq.json
 sesheta_rsa*
 certs/
-travis_logs/
+coverage_html_report/
 *.retry

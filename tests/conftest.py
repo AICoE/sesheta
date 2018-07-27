@@ -45,3 +45,11 @@ def pull_request_review_requested():  # Ignore PyDocStyleBear
         data = json.load(f)
 
     return data
+
+
+@pytest.fixture()
+def pull_request_merged():  # Ignore PyDocStyleBear
+    with open('./fixtures/pull_request_merged.json') as f:
+        data = json.load(f)
+
+    return data
