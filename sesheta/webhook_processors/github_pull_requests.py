@@ -39,5 +39,8 @@ def process_github_open_pullrequest(pullrequest: dict) -> None:
     if pullrequest['title'].startswith('Automatic update of dependency'):
         return
 
+    if pullrequest['title'].startswith('Release of'):
+        return
+
     notify_channel(f"_{mattermost_username_by_github_user(pullrequest['user']['login'])}_ just "
                    f"opened a pull request: '[{pullrequest['title']}]({pullrequest['html_url']})'...")

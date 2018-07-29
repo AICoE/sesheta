@@ -102,13 +102,6 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
     if pullrequest['title'].startswith('Automatic update of dependency'):
         return
 
-    # otherwise we notify of merge
-    if not _DRY_RUN:
-        notify_channel(
-            random_positive_emoji() +
-            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
-            f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
-
     # and we check if we should create a release...
     if pullrequest['title'].startswith('Release of'):
         if not eligible_release_pullrequest(pullrequest):
@@ -171,8 +164,15 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
                 random_positive_emoji())
 
         # happy! 💕
+    else:
+        # otherwise we notify of merge
+        if not _DRY_RUN:
+            notify_channel(
+                random_positive_emoji() +
+                f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})' was successfully "
+                f"merged into [{pullrequest['base']['repo']['full_name']}]({pullrequest['base']['repo']['html_url']}) ")
 
-        return
+    return
 
 
 def _add_size_label(pullrequest: dict) -> None:  # pragma: no cover
