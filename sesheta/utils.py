@@ -23,6 +23,7 @@ import sys
 import os
 import random
 
+import json
 import requests
 import logging
 
@@ -32,9 +33,11 @@ import daiquiri
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
 
-
+DEBUG = bool(os.getenv('DEBUG', True))
+SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
 ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)
 
+# pragma: no cover
 GITHUB_MATTERMOST_MAPPING = {
     "goern": "goern",
     "fridex": "fridolin",
@@ -46,14 +49,48 @@ GITHUB_MATTERMOST_MAPPING = {
     "vpavlin": "vpavlin"
 }
 
+# pragma: no cover
 POSITIVE_MATTERMOST_EMOJIS = [
     ':tada:',
     ':champagne:',
     ':party_parrot:',
     ':falloutboythumbsup:',
     ':thumbsup:',
-    ':+1:'
+    ':+1:',
+    ':confetti_ball:'
 ]
+
+# pragma: no cover
+PR_SIZE_LABELS = [
+    'size/XS',
+    'size/S',
+    'size/M',
+    'size/L',
+    'size/XL',
+    'size/XXL'
+]
+
+
+def calculate_pullrequest_size(pullrequest) -> str:
+    """Calculate the number of additions/deletions of this PR."""
+    try:
+        lines_changes = pullrequest['additions'] + pullrequest['deletions']
+
+        if lines_changes > 1000:
+            return 'size/XXL'
+        elif lines_changes >= 500 and lines_changes <= 999:
+            return 'size/XL'
+        elif lines_changes >= 100 and lines_changes <= 499:
+            return 'size/L'
+        elif lines_changes >= 30 and lines_changes <= 99:
+            return 'size/M'
+        elif lines_changes >= 10 and lines_changes <= 29:
+            return 'size/S'
+        elif lines_changes >= 0 and lines_changes <= 9:
+            return 'size/XS'
+    except KeyError as exc:
+        _LOGGER.exception(exc)
+        return None
 
 
 def random_positive_emoji() -> str:
@@ -76,7 +113,7 @@ def mattermost_username_by_github_user(github: str) -> str:
     return f'@{mattermost}'
 
 
-def notify_channel(message: str) -> None:
+def notify_channel(message: str) -> None:  # pragma: no cover
     """Send message to Mattermost Channel."""
     if ENDPOINT_URL is None:
         _LOGGER.error('No Mattermost incoming webhook URL supplied!')
@@ -90,6 +127,23 @@ def notify_channel(message: str) -> None:
         _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
 
 
-def add_labels(pull_request_url: str, labels: list) -> None:
+def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
     """Add labels to a GitHub Pull Request."""
-    return
+    _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
+
+    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
+
+    requests.post(f"{pull_request_url}/labels",
+                  headers=headers,  data=json.dumps(labels))
+
+
+def set_size(pull_request_url: str, sizeLabel: str) -> None:  # pragma: no cover
+    """Set the size labels of a GitHub Pull Request."""
+    # TODO check if some size label is set, if so, change it to the sizeLabel
+
+    _LOGGER.debug(f"adding size label '{sizeLabel}' to {pull_request_url}")
+
+    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
+
+    requests.post(f"{pull_request_url}/labels",
+                  headers=headers,  data=json.dumps([sizeLabel]))

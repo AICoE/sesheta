@@ -19,12 +19,6 @@
 """This will handle Humans taking a look at me."""
 
 
-import os
-import logging
-import json
-
-import daiquiri
-
 from flask import Blueprint
 
 
@@ -32,6 +26,6 @@ website = Blueprint('website', __name__, url_prefix='/')
 
 
 @website.route('/', methods=['GET'])
-def index():
+def index():  # pragma: no cover
     """easy."""
     return "This is for Bots only! Please have a look at https://github.com/AICoE/sesheta"

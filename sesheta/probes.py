@@ -16,22 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""test..."""
+"""This will answer OpenShift Readyness and Liveness probes."""
 
 
-from sesheta.webhook_processors.github_reviews import *
+from flask import Blueprint, jsonify
 
 
-_REVIEW_STATES = [
-    'approved', 'commented'
-]
+probes = Blueprint('probes', __name__, url_prefix='/_healthz')
 
 
-class TestReviews(object):
-    def test_handle_github_pull_request_review_requested(self, pull_request_review_requested):
-        assert pull_request_review_requested
-        assert pull_request_review_requested['action'] == 'review_requested'
-        assert 'requested_reviewers' in pull_request_review_requested.keys()
-
-        process_github_pull_request_review_requested(
-            pull_request_review_requested['pull_request'])
+@probes.route('/', methods=['GET'])
+def readyness():  # pragma: no cover
+    """easy."""
+    return jsonify({"status": "ok!"}), 200

@@ -2,6 +2,24 @@
 
 Sesheta is a junior community team member. We will reincarnate it over the next weeks...
 
+# Source Operations
+
+## Labels
+
+The following sections describe what Sesheta does with regards to source operations.
+
+### Pull/Merge Request Size Labels
+
+Each Pull/Merge Request will be assigned a size label. Labels are applied based on
+the total number of lines of changes (additions and deletions):
+
+- size/XS: 0-9
+- size/S: 10-29
+- size/M: 30-99
+- size/L 100-499
+- size/XL: 500-999
+- size/XXL: 1000+
+
 ## Deploying
 
 To deploy sesheta on an OpenShift cluster use the following Ansible command with required parameters:
@@ -17,21 +35,19 @@ To deploy sesheta on an OpenShift cluster use the following Ansible command with
     playbooks/provision.yaml
 ```
 
+- `KEBECHET_SSH_PRIVATE_KEY_PATH`: The path where the GitHub ssh private key is stored should be provided. (Example: $HOME/.ssh/id_rsa). If the field is undefined then the script will create the ssh keys for you and then you can set up the given public key to GitHub repository.
 
-* ``KEBECHET_SSH_PRIVATE_KEY_PATH``: The path where the GitHub ssh private key is stored should be provided. (Example: $HOME/.ssh/id_rsa). If the field is undefined then the script will create the ssh keys for you and then you can set up the given public key to GitHub repository.
+- `KEBECHET_TOKEN`: To raise a pull request bot requires user rights and premissions. The GitHub OAuth tokens are to be set for raising pull request whenever updates are encounter by the Kebechet.
 
-* ``KEBECHET_TOKEN``: To raise a pull request bot requires user rights and premissions. The GitHub OAuth tokens are to be set for raising pull request whenever updates are encounter by the Kebechet.
+- `KEBECHET_CONFIGURATION_PATH`: Path to the YAML configuration file to be used for Kebechet to check for dependency updates.
 
-* ``KEBECHET_CONFIGURATION_PATH``: Path to the YAML configuration file to be used for Kebechet to check for dependency updates.
+- `KEBECHET_INFRA_NAMESPACE`: The OpenShift namespace can be used for the infrastructural purposes, all the images stream are stored in the `KEBECHET_INFRA_NAMESPACE`.
 
-* ``KEBECHET_INFRA_NAMESPACE``: The OpenShift namespace can be used for the infrastructural purposes, all the images stream are stored in the ``KEBECHET_INFRA_NAMESPACE``.
+- `KEBECHET_APPLICATION_NAMESPACE`: The OpenShift namespace can be used for the application purposes, all the templates, builds, secrets, configmap and jobs are stored in the `KEBECHET_APPLICATION_NAMESPACE`.
 
-* ``KEBECHET_APPLICATION_NAMESPACE``: The OpenShift namespace can be used for the application purposes, all the templates, builds, secrets, configmap and jobs are stored in the ``KEBECHET_APPLICATION_NAMESPACE``.
+- `SESHETA_GITHUB_WEBHOOK_SECRET`: Secret used to secure each webhook send by GitHub.
 
-* ``SESHETA_GITHUB_WEBHOOK_SECRET``: Secret used to secure each webhook send by GitHub.
-
-* ``SESHETA_MATTERMOST_ENDPOINT_URL``: The incoming webhook URL of Mattermost.
-
+- `SESHETA_MATTERMOST_ENDPOINT_URL`: The incoming webhook URL of Mattermost.
 
 ## Copyright
 

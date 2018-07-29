@@ -19,19 +19,13 @@
 """This will handle all the GitHub webhooks."""
 
 
-import os
-import logging
-import json
-
-import daiquiri
-
-from flask import request, Blueprint, jsonify
+from flask import Blueprint, jsonify
 
 
 metrics = Blueprint('metrics', __name__, url_prefix='/metrics')
 
 
 @metrics.route('/', methods=['GET'])
-def send_prometheus_registry_dump():
+def send_prometheus_registry_dump():  # pragma: no cover
     """easy."""
     return jsonify({"message": "thanks!"}), 200
