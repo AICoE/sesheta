@@ -145,7 +145,10 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
             f"Commenting on {release_issue} that we tagged {release} on hash {commit_hash}.")
 
         comment = {
-            "body": f"I have tagged commit [{commit_hash}](https://github.com/thoth-station/srcops-testing/commit/{commit_hash}) as release {release} :+1:"
+            "body":
+                f"I have tagged commit "
+                f"[{commit_hash}](https://github.com/thoth-station/srcops-testing/commit/{commit_hash}) "
+                f"as release {release} :+1:"
         }
 
         requests.post(f"{pullrequest['base']['repo']['url']}/issues/{release_issue}/comments",

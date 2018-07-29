@@ -29,19 +29,19 @@ class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
         assert pull_request_merged
         assert pull_request_review_requested
 
-        assert eligible_release_pullrequest(pull_request_merged) == True
+        assert eligible_release_pullrequest(pull_request_merged) == True  # Ignore PycodestyleBear (E712)
         assert eligible_release_pullrequest(
-            pull_request_review_requested) == False
+            pull_request_review_requested) == False  # Ignore PycodestyleBear (E712)
 
     # Ignore PyDocStyleBear
     def test_get_release_issue(self, pull_request_review_requested, pull_request_merged):
         assert pull_request_merged
         assert pull_request_review_requested
 
-        assert get_release_issue(pull_request_review_requested) == None
+        assert get_release_issue(pull_request_review_requested) == None  # Ignore PycodestyleBear (E711)
         assert get_release_issue(pull_request_merged) == 15
 
-    def test_mattermost_username_by_github_user(self):
+    def test_mattermost_username_by_github_user(self):  # Ignore PyDocStyleBear
         assert mattermost_username_by_github_user('goern') == '@goern'
         assert mattermost_username_by_github_user('fridex') == '@fridolin'
         assert mattermost_username_by_github_user(
