@@ -16,5 +16,5 @@ file_naming_convention = snake
 [all.yaml]
 bears = YAMLLintBear, FilenameBear
 files = **.yaml
-max_line_length = 120
+max_line_length = 138
 file_naming_convention = camel
