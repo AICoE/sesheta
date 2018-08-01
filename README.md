@@ -20,6 +20,10 @@ the total number of lines of changes (additions and deletions):
 - size/XL: 500-999
 - size/XXL: 1000+
 
+### Pull/Merge Requests requiring rebase
+
+If a 'needs-rebase' label is set on a Pull/Merge Request, a notification will be send out to the DevOps Channel.
+
 ## Deploying
 
 To deploy sesheta on an OpenShift cluster use the following Ansible command with required parameters:

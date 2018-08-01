@@ -238,6 +238,8 @@ def handle_github_webhook():  # pragma: no cover
             elif action == 'review_requested':
                 process_github_pull_request_review_requested(
                     payload['pull_request'])
+            elif action == 'labeled':
+                process_github_pull_request_labeled(payload['pull_request'])
         elif event == 'issues':
             if payload['action'] == 'opened':
                 handle_github_open_issue(payload['issue'])
