@@ -56,7 +56,7 @@ def process_github_pull_request_labeled(pullrequest: dict) -> None:
     if pullrequest['title'].startswith('Release of'):
         return
 
-    for label in pullrequest.labels:
+    for label in pullrequest['labels']:
         if label['name'] == 'needs-rebase':
             notify_channel(f"_{mattermost_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
                            f"at pull request: '[{pullrequest['title']}]({pullrequest['html_url']})' it needs "
