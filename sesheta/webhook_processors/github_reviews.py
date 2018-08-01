@@ -32,14 +32,15 @@ _LOGGER = daiquiri.getLogger(__name__)
 
 def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
     """Will handle with care."""
-    if review['state'] == 'comment':
+    if review['state'] == 'commented':
         notify_channel(
             f"_{mattermost_username_by_github_user(review['user']['login'])}_ submitted a review:comment"
             f" for Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
     elif review['state'] == 'approved':
-        notify_channel(
-            f":white_check_mark: _{mattermost_username_by_github_user(review['user']['login'])}_ approved"
-            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
+        # right now we dont want to see this notification, just add the label...
+        #        notify_channel(
+        #            f":white_check_mark: _{mattermost_username_by_github_user(review['user']['login'])}_ approved"
+        #            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
         add_labels(pullrequest['_links']['issue']['href'], ['approved'])
 
 
