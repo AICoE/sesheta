@@ -122,6 +122,7 @@ def notify_channel(message: str) -> None:  # pragma: no cover
     payload = {'text': message,
                'icon_url': 'https://avatars1.githubusercontent.com/u/33906690'}
 
+    # TODO migrate this to IGitt
     r = requests.post(ENDPOINT_URL, json=payload)
     if r.status_code != 200:
         _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
@@ -131,6 +132,7 @@ def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
     """Add labels to a GitHub Pull Request."""
     _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
 
+    # TODO migrate this to IGitt
     headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
 
     requests.post(f"{pull_request_url}/labels",
@@ -139,11 +141,6 @@ def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
 
 def set_size(pull_request_url: str, sizeLabel: str) -> None:  # pragma: no cover
     """Set the size labels of a GitHub Pull Request."""
-    # TODO check if some size label is set, if so, change it to the sizeLabel
-
     _LOGGER.debug(f"adding size label '{sizeLabel}' to {pull_request_url}")
 
-    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
-
-    requests.post(f"{pull_request_url}/labels",
-                  headers=headers,  data=json.dumps([sizeLabel]))
+    add_labels(pull_request_url, [sizeLabel])
