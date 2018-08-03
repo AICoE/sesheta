@@ -25,23 +25,28 @@ from sesheta.utils import mattermost_username_by_github_user
 
 class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
     # Ignore PyDocStyleBear
-    def test_eligible_release_pullrequest(self, pull_request_review_requested, pull_request_merged):
+    @staticmethod
+    def test_eligible_release_pullrequest(pull_request_review_requested, pull_request_merged):
         assert pull_request_merged
         assert pull_request_review_requested
 
-        assert eligible_release_pullrequest(pull_request_merged) == True  # Ignore PycodestyleBear (E712)
+        assert eligible_release_pullrequest(
+            pull_request_merged) == True  # Ignore PycodestyleBear (E712)
         assert eligible_release_pullrequest(
             pull_request_review_requested) == False  # Ignore PycodestyleBear (E712)
 
     # Ignore PyDocStyleBear
-    def test_get_release_issue(self, pull_request_review_requested, pull_request_merged):
+    @staticmethod
+    def test_get_release_issue(pull_request_review_requested, pull_request_merged):
         assert pull_request_merged
         assert pull_request_review_requested
 
-        assert get_release_issue(pull_request_review_requested) == None  # Ignore PycodestyleBear (E711)
+        # Ignore PycodestyleBear (E711)
+        assert get_release_issue(pull_request_review_requested) == None
         assert get_release_issue(pull_request_merged) == 15
 
-    def test_mattermost_username_by_github_user(self):  # Ignore PyDocStyleBear
+    @staticmethod
+    def test_mattermost_username_by_github_user():  # Ignore PyDocStyleBear
         assert mattermost_username_by_github_user('goern') == '@goern'
         assert mattermost_username_by_github_user('fridex') == '@fridolin'
         assert mattermost_username_by_github_user(
