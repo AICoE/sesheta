@@ -24,8 +24,8 @@ from sesheta.utils import mattermost_username_by_github_user
 
 
 class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
-    # Ignore PyDocStyleBear
     @staticmethod
+    # Ignore PyDocStyleBear
     def test_eligible_release_pullrequest(pull_request_review_requested, pull_request_merged):
         assert pull_request_merged
         assert pull_request_review_requested
@@ -35,8 +35,8 @@ class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
         assert eligible_release_pullrequest(
             pull_request_review_requested) == False  # Ignore PycodestyleBear (E712)
 
-    # Ignore PyDocStyleBear
     @staticmethod
+    # Ignore PyDocStyleBear
     def test_get_release_issue(pull_request_review_requested, pull_request_merged):
         assert pull_request_merged
         assert pull_request_review_requested

@@ -23,8 +23,8 @@ from sesheta.utils import calculate_pullrequest_size
 
 
 class TestPullRequests(object):  # Ignore PyDocStyleBear
-    # Ignore PyDocStyleBear
     @staticmethod
+    # Ignore PyDocStyleBear
     def test_pull_request_size(pull_request_review_requested):
         assert pull_request_review_requested
         assert pull_request_review_requested['action'] == 'review_requested'
@@ -33,8 +33,8 @@ class TestPullRequests(object):  # Ignore PyDocStyleBear
         assert calculate_pullrequest_size(
             pull_request_review_requested['pull_request']) == 'size/XS'
 
-    # Ignore PyDocStyleBear
     @staticmethod
+    # Ignore PyDocStyleBear
     def test_review_approved(pull_request_review_submitted_approved):
         assert pull_request_review_submitted_approved
         assert pull_request_review_submitted_approved['action'] == 'submitted'
