@@ -18,7 +18,6 @@
 
 """This processes GitHub Reviews."""
 
-import sys
 import logging
 
 import daiquiri

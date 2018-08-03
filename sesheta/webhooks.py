@@ -20,11 +20,9 @@
 
 
 import os
-import sys
 import logging
 import hmac
 import json
-import re
 
 import daiquiri
 import requests
@@ -70,6 +68,9 @@ def eligible_release_pullrequest(pullrequest: dict) -> bool:
                 f"No 'bot' label on Release Pull Request: '{pullrequest['title']}', not eligible for release!")
             return False
     except KeyError as exc:
+        _LOGGER.debug(
+            f"Not any label on Release Pull Request")
+        _LOGGER.exception(exc)
         return False
 
     # check if Kebechet was the author pullrequest['user']['login']

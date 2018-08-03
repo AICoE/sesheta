@@ -19,12 +19,13 @@
 """test..."""
 
 
-from sesheta.utils import calculate_pullrequest_size, add_labels
+from sesheta.utils import calculate_pullrequest_size
 
 
 class TestPullRequests(object):  # Ignore PyDocStyleBear
+    @staticmethod
     # Ignore PyDocStyleBear
-    def test_pull_request_size(self, pull_request_review_requested):
+    def test_pull_request_size(pull_request_review_requested):
         assert pull_request_review_requested
         assert pull_request_review_requested['action'] == 'review_requested'
         assert 'requested_reviewers' in pull_request_review_requested.keys()
@@ -32,7 +33,9 @@ class TestPullRequests(object):  # Ignore PyDocStyleBear
         assert calculate_pullrequest_size(
             pull_request_review_requested['pull_request']) == 'size/XS'
 
-    def test_review_approved(self, pull_request_review_submitted_approved):  # Ignore PyDocStyleBear
+    @staticmethod
+    # Ignore PyDocStyleBear
+    def test_review_approved(pull_request_review_submitted_approved):
         assert pull_request_review_submitted_approved
         assert pull_request_review_submitted_approved['action'] == 'submitted'
 

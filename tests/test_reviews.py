@@ -28,7 +28,9 @@ _REVIEW_STATES = [
 
 
 class TestReviews(object):  # Ignore PyDocStyleBear
-    def test_handle_github_pull_request_review_requested(self, pull_request_review_requested):  # Ignore PyDocStyleBear
+    @staticmethod
+    # Ignore PyDocStyleBear
+    def test_handle_github_pull_request_review_requested(pull_request_review_requested):
         assert pull_request_review_requested
         assert pull_request_review_requested['action'] == 'review_requested'
         assert 'requested_reviewers' in pull_request_review_requested.keys()
