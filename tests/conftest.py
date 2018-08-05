@@ -30,6 +30,7 @@ def issue115():  # Ignore PyDocStyleBear
 
     return data
 
+
 @pytest.fixture()
 def pull_request_review_submitted():  # Ignore PyDocStyleBear
     with open('./fixtures/pull_request_review_submitted.json') as f:

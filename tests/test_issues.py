@@ -18,14 +18,8 @@
 
 """test..."""
 
-import os
-
-from IGitt.GitHub.GitHubIssue import GitHubToken, GitHubIssue
 
 from sesheta.webhook_processors.github_issue_analyzer import analyse_github_issue
-
-
-SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
 
 
 class TestIssues(object):  # Ignore PyDocStyleBear
@@ -36,4 +30,4 @@ class TestIssues(object):  # Ignore PyDocStyleBear
 
         analysis = analyse_github_issue(issue115)
 
-        assert analysis['status']['flake'] == True
+        assert analysis['status']['flake'] is True

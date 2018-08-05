@@ -22,12 +22,9 @@ import logging
 
 import daiquiri
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user, add_labels
-
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
-
 
 
 def analyse_github_issue(issue: dict) -> dict:
