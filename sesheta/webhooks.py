@@ -28,10 +28,13 @@ import daiquiri
 import requests
 
 from flask import request, Blueprint, jsonify, current_app
+from IGitt.GitHub.GitHubRepository import GitHubRepository
+from IGitt.GitHub.GitHubIssue import GitHubToken, GitHubIssue
 
 from sesheta.utils import notify_channel, random_positive_emoji, calculate_pullrequest_size, set_size
 from sesheta.webhook_processors.github_reviews import *
 from sesheta.webhook_processors.github_pull_requests import *
+from sesheta.webhook_processors.github_issue_analyzer import analyse_github_issue
 
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
@@ -57,6 +60,23 @@ def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
 
     notify_channel(f"[{issue['user']['login']}]({issue['user']['url']}) just "
                    f"opened an issue: [{issue['title']}]({issue['html_url']})... :glowstick:")
+
+    analysis = analyse_github_issue(issue)
+
+    if analysis['status']['flake']:
+        _LOGGER.debug(
+            f"{issue['number']} seems to be a flake: {analysis['status']['reason']}")
+
+        repo = GitHubRepository(GitHubToken(
+            _SESHETA_GITHUB_ACCESS_TOKEN), issue['repository']['full_name'])
+
+        repo.create_label('test_flake', '#f3ccff')
+
+        igitt_issue = GitHubIssue(
+            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), issue['repository']['full_name'], issue['number'])
+        labels = igitt_issue.labels
+        labels.add('test_flake')
+        igitt_issue.labels = labels
 
 
 def eligible_release_pullrequest(pullrequest: dict) -> bool:
