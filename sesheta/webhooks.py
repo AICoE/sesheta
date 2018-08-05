@@ -70,12 +70,15 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
         repo = GitHubRepository(GitHubToken(
             _SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'])
 
-        repo.create_label('test_flake', '#f3ccff')
+        repo.create_label('flake', '#f3ccff')
+        repo.create_label('human_intervention_required', '#f3ccff')
+        repo.create_label('potential_flake', '#f3ccff')
 
         igitt_issue = GitHubIssue(
             GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'], issue['number'])
         labels = igitt_issue.labels
-        labels.add('test_flake')
+        labels.add('human_intervention_required')
+        labels.add('potential_flake')
         igitt_issue.labels = labels
 
 
