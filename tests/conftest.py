@@ -24,6 +24,14 @@ import pytest
 
 
 @pytest.fixture()
+def issue115():  # Ignore PyDocStyleBear
+    with open('./fixtures/issue-115.json') as f:
+        data = json.load(f)
+
+    return data
+
+
+@pytest.fixture()
 def pull_request_review_submitted():  # Ignore PyDocStyleBear
     with open('./fixtures/pull_request_review_submitted.json') as f:
         data = json.load(f)

@@ -28,10 +28,13 @@ import daiquiri
 import requests
 
 from flask import request, Blueprint, jsonify, current_app
+from IGitt.GitHub.GitHubRepository import GitHubRepository
+from IGitt.GitHub.GitHubIssue import GitHubToken, GitHubIssue
 
 from sesheta.utils import notify_channel, random_positive_emoji, calculate_pullrequest_size, set_size
 from sesheta.webhook_processors.github_reviews import *
 from sesheta.webhook_processors.github_pull_requests import *
+from sesheta.webhook_processors.github_issue_analyzer import analyse_github_issue
 
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
@@ -46,7 +49,7 @@ _GIT_API_REQUEST_HEADERS = {
 webhooks = Blueprint('webhook', __name__, url_prefix='')
 
 
-def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
+def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: no cover
     """Will handle with care."""
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
@@ -57,6 +60,26 @@ def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
 
     notify_channel(f"[{issue['user']['login']}]({issue['user']['url']}) just "
                    f"opened an issue: [{issue['title']}]({issue['html_url']})... :glowstick:")
+
+    analysis = analyse_github_issue(issue)
+
+    if analysis['status']['flake']:
+        _LOGGER.debug(
+            f"{issue['number']} seems to be a flake: {analysis['status']['reason']}")
+
+        repo = GitHubRepository(GitHubToken(
+            _SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'])
+
+        repo.create_label('flake', '#f3ccff')
+        repo.create_label('human_intervention_required', '#f3ccff')
+        repo.create_label('potential_flake', '#f3ccff')
+
+        igitt_issue = GitHubIssue(
+            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'], issue['number'])
+        labels = igitt_issue.labels
+        labels.add('human_intervention_required')
+        labels.add('potential_flake')
+        igitt_issue.labels = labels
 
 
 def eligible_release_pullrequest(pullrequest: dict) -> bool:
@@ -243,7 +266,7 @@ def handle_github_webhook():  # pragma: no cover
                 process_github_pull_request_labeled(payload['pull_request'])
         elif event == 'issues':
             if payload['action'] == 'opened':
-                handle_github_open_issue(payload['issue'])
+                handle_github_open_issue(payload['issue'], payload['repository'])
         elif event == 'pull_request_review':
             process_github_pull_request_review(
                 payload['pull_request'], payload['review'])
