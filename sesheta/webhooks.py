@@ -49,7 +49,7 @@ _GIT_API_REQUEST_HEADERS = {
 webhooks = Blueprint('webhook', __name__, url_prefix='')
 
 
-def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
+def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: no cover
     """Will handle with care."""
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
@@ -68,12 +68,12 @@ def handle_github_open_issue(issue: dict) -> None:  # pragma: no cover
             f"{issue['number']} seems to be a flake: {analysis['status']['reason']}")
 
         repo = GitHubRepository(GitHubToken(
-            _SESHETA_GITHUB_ACCESS_TOKEN), issue['repository']['full_name'])
+            _SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'])
 
         repo.create_label('test_flake', '#f3ccff')
 
         igitt_issue = GitHubIssue(
-            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), issue['repository']['full_name'], issue['number'])
+            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository['full_name'], issue['number'])
         labels = igitt_issue.labels
         labels.add('test_flake')
         igitt_issue.labels = labels
@@ -263,7 +263,7 @@ def handle_github_webhook():  # pragma: no cover
                 process_github_pull_request_labeled(payload['pull_request'])
         elif event == 'issues':
             if payload['action'] == 'opened':
-                handle_github_open_issue(payload['issue'])
+                handle_github_open_issue(payload['issue'], payload['repository'])
         elif event == 'pull_request_review':
             process_github_pull_request_review(
                 payload['pull_request'], payload['review'])
