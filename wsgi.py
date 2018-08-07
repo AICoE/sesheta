@@ -22,11 +22,14 @@ import logging
 
 import daiquiri
 
-from sesheta import create_application
+from sesheta import create_application, __version__
 
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
 _LOGGER = daiquiri.getLogger(__name__)
 
+
+_LOGGER.info(f"Hi, I am Sesheta, I will handle your incoming GitHub webhooks, "
+             f"and I'm running v{__version__}")
 
 application = create_application()
