@@ -109,9 +109,10 @@ def get_release_issue(pullrequest: dict) -> int:
     """Figure out which Issue is related to this Release Pull Request."""
     try:
         # TODO maybe we need to split the body by \n and process each line?!
-        if pullrequest['body'].upper().startswith('RELATED'):
-            related, issue = pullrequest['body'].split('#')
-            return int(issue)  # FIXME this might fail
+        for line in pullrequest['body'].splitlines():
+            if line.upper().startswith('RELATED'):
+                _, issue = line.split('#', maxsplit=1)
+                return int(issue)  # FIXME this might fail
     except KeyError as exc:
         return None
 
