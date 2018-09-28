@@ -63,7 +63,7 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
 
     analysis = analyse_github_issue(issue)
 
-    if analysis['status']['flake']:
+    if 'flake' in analysis['status'].keys():
         _LOGGER.debug(
             f"{issue['number']} seems to be a flake: {analysis['status']['reason']}")
 
@@ -267,7 +267,8 @@ def handle_github_webhook():  # pragma: no cover
                 process_github_pull_request_labeled(payload['pull_request'])
         elif event == 'issues':
             if payload['action'] == 'opened':
-                handle_github_open_issue(payload['issue'], payload['repository'])
+                handle_github_open_issue(
+                    payload['issue'], payload['repository'])
         elif event == 'pull_request_review':
             process_github_pull_request_review(
                 payload['pull_request'], payload['review'])
