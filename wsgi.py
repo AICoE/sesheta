@@ -20,13 +20,14 @@
 
 import logging
 
-import daiquiri
+from thoth.common import init_logging
 
 from sesheta import create_application, __version__
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
-_LOGGER = daiquiri.getLogger(__name__)
+init_logging()
+
+_LOGGER = logging.getLogger('thoth.sesheta')
 
 
 _LOGGER.info(f"Hi, I am Sesheta, I will handle your incoming GitHub webhooks, "

@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-daiquiri = "*"
+thoth-common = "*"
 requests = "*"
 flask = "*"
 gunicorn = "*"
@@ -18,7 +18,6 @@ pytest-timeout = "*"
 pytest-cov = "*"
 "autopep8" = "*"
 coala-bears = "*"
-coala = "*"
 
 [requires]
 python_version = "3.6"
