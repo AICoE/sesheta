@@ -31,7 +31,7 @@ from .probes import probes
 
 
 __name__ = 'sesheta'
-__version__ = "2.1.0"
+__version__ = "2.2.0"
 __author__ = 'Christoph Görn <goern@redhat.com>'
 
 
