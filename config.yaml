@@ -1,24 +1,27 @@
 organization: thoth-station
 repositories:
-  - core
-  - user-api
-  - common
-  - package-releases-job
-  - graph-refresh-job
-  - result-api
-  - solver
-  - graph-sync-job
-  - cleanup-job
-  - package-extract
   - adviser
+  - amun-api
+  - amun-client
   - analyzer
-  - build-analysers
+  - cleanup-job
+  - common
+  - core
+  - cve-update-job
   - dependency-monkey
-  - notebooks
+  - graph-refresh-job
+  - graph-sync-job
   - jupyter-notebook
   - lab
-  - naming-service
   - misc
+  - notebooks
+  - package-extract
+  - package-releases-job
+  - result-api
+  - solver
+  - storages
+  - thamos
+  - user-api
 defaultLabels:
   - name: 'bot'
     color: '698b69'
