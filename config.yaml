@@ -3,7 +3,9 @@ repositories:
   - adviser
   - amun-api
   - amun-client
+  - amun-hwinfo
   - analyzer
+  - build-analysers
   - cleanup-job
   - common
   - core
@@ -49,3 +51,5 @@ defaultLabels:
     color: '0052cc'
   - name: 'component/notebook'
     color: '0052cc'
+  - name: "priority/critical-urgent"
+    color: 'e11d21'
