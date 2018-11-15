@@ -12,8 +12,8 @@ metadata:
       This is sesheta Webhooks Deployment, this template is meant to be used by Bots,
       but could also be used by humans...
     openshift.io/display-name: sesheta BuildConfig
-    version: 2.0.0-dev
-    tags: poc,thoth,ai-stacks,sesheta
+    version: 2.1.0
+    tags: thoth,ai-stacks,aistacks,sesheta
     template.openshift.io/documentation-url: https://github.com/thoth-station/sesheta/
     template.openshift.io/long-description: This is sesheta used for automatic package releases and updates.
     template.openshift.io/provider-display-name: Red Hat, Inc.
@@ -93,6 +93,11 @@ objects:
                     secretKeyRef:
                       name: sesheta-secret
                       key: mattermost-endpoint-url
+                - name: SESHETA_GOOGLE_CHAT_ENDPOINT_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: sesheta-secret
+                      key: google-chat-endpoint-url
               ports:
                 - containerPort: 8080
                   protocol: TCP

@@ -22,7 +22,7 @@ import os
 from flask import Flask
 
 
-from .utils import notify_channel, mattermost_username_by_github_user
+from .utils import notify_channel
 
 from .webhooks import webhooks
 from .metrics import metrics
@@ -31,7 +31,7 @@ from .probes import probes
 
 
 __name__ = 'sesheta'
-__version__ = "2.2.1"
+__version__ = "2.2.2"
 __author__ = 'Christoph Görn <goern@redhat.com>'
 
 

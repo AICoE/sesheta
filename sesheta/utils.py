@@ -29,64 +29,61 @@ import logging
 import daiquiri
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
+daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
-DEBUG = bool(os.getenv('DEBUG', True))
-SESHETA_GITHUB_ACCESS_TOKEN = os.getenv('SESHETA_GITHUB_ACCESS_TOKEN', None)
-ENDPOINT_URL = os.getenv('SESHETA_MATTERMOST_ENDPOINT_URL', None)
+DEBUG = bool(os.getenv("DEBUG", True))
+SESHETA_GITHUB_ACCESS_TOKEN = os.getenv("SESHETA_GITHUB_ACCESS_TOKEN", None)
+ENDPOINT_URL = os.getenv("SESHETA_MATTERMOST_ENDPOINT_URL", None)
+GOOGLE_CHAT_ENDPOINT_URL = os.getenv("SESHETA_GOOGLE_CHAT_ENDPOINT_URL", None)
+
 
 # pragma: no cover
-GITHUB_MATTERMOST_MAPPING = {
-    "goern": "goern",
-    "fridex": "fridolin",
-    "harshad16": "hnalla",
-    "ace2107": "akash2107",
-    "durandom": "hild",
-    "sub-mod": "subin",
-    "sushmithaaredhatdev": "sushmitha_nagarajan",
-    "vpavlin": "vpavlin"
+GITHUB_GOOGLE_CHAT_MAPPING = {
+    "goern": "@Christoph Goern",
+    "fridex": "@Frido Pokorny",
+    "ace2107": "@Akash Parekh",
+    "durandom": "@Marcel Hild",
+    "sub-mod": "@Subin Modeel",
+    "CermakM": "@Marek Cermak",
+    "vpavlin": "@Vaclav Pavlin",
 }
 
 # pragma: no cover
 POSITIVE_MATTERMOST_EMOJIS = [
-    ':tada:',
-    ':champagne:',
-    ':party_parrot:',
-    ':falloutboythumbsup:',
-    ':thumbsup:',
-    ':+1:',
-    ':confetti_ball:'
+    ":tada:",
+    ":champagne:",
+    ":party_parrot:",
+    ":falloutboythumbsup:",
+    ":thumbsup:",
+    ":+1:",
+    ":confetti_ball:",
 ]
 
 # pragma: no cover
-PR_SIZE_LABELS = [
-    'size/XS',
-    'size/S',
-    'size/M',
-    'size/L',
-    'size/XL',
-    'size/XXL'
-]
+POSITIVE_GOOGLE_CHAT_EMOJIS = ["😊", "😌", "🙏", "👍", "😇", "☺️", "👌"]
+
+# pragma: no cover
+PR_SIZE_LABELS = ["size/XS", "size/S", "size/M", "size/L", "size/XL", "size/XXL"]
 
 
 def calculate_pullrequest_size(pullrequest) -> str:
     """Calculate the number of additions/deletions of this PR."""
     try:
-        lines_changes = pullrequest['additions'] + pullrequest['deletions']
+        lines_changes = pullrequest["additions"] + pullrequest["deletions"]
 
         if lines_changes > 1000:
-            return 'size/XXL'
+            return "size/XXL"
         elif lines_changes >= 500 and lines_changes <= 999:
-            return 'size/XL'
+            return "size/XL"
         elif lines_changes >= 100 and lines_changes <= 499:
-            return 'size/L'
+            return "size/L"
         elif lines_changes >= 30 and lines_changes <= 99:
-            return 'size/M'
+            return "size/M"
         elif lines_changes >= 10 and lines_changes <= 29:
-            return 'size/S'
+            return "size/S"
         elif lines_changes >= 0 and lines_changes <= 9:
-            return 'size/XS'
+            return "size/XS"
     except KeyError as exc:
         _LOGGER.exception(exc)
         return None
@@ -97,34 +94,45 @@ def random_positive_emoji() -> str:
     return random.choice(POSITIVE_MATTERMOST_EMOJIS)
 
 
-def mattermost_username_by_github_user(github: str) -> str:
-    """Map a GitHub User to a Mattermost User."""
-    mattermost = None
+def random_positive_emoji2() -> str:
+    """Pick a random positive emoji."""
+    return random.choice(POSITIVE_GOOGLE_CHAT_EMOJIS)
+
+
+def google_chat_username_by_github_user(github: str) -> str:
+    """Map a GitHub User to a Google Chat User."""
+    gchat = None
 
     try:
-        mattermost = GITHUB_MATTERMOST_MAPPING[github]
+        gchat = GITHUB_GOOGLE_CHAT_MAPPING[github]
     except KeyError as exp:
         _LOGGER.exception(exp)
 
     if not mattermost:
         return github
 
-    return f'@{mattermost}'
+    return f"@{gchat}"
 
 
 def notify_channel(message: str) -> None:  # pragma: no cover
     """Send message to Mattermost Channel."""
     if ENDPOINT_URL is None:
-        _LOGGER.error('No Mattermost incoming webhook URL supplied!')
+        _LOGGER.error("No Mattermost incoming webhook URL supplied!")
         exit(-2)
 
-    payload = {'text': message,
-               'icon_url': 'https://avatars1.githubusercontent.com/u/33906690'}
+    if GOOGLE_CHAT_ENDPOINT_URL is None:
+        _LOGGER.error("No Google Chat incoming webhook URL supplied!")
+        exit(-3)
 
-    # TODO migrate this to IGitt
+    payload = {"text": message, "icon_url": "https://avatars1.githubusercontent.com/u/33906690"}
+
     r = requests.post(ENDPOINT_URL, json=payload)
     if r.status_code != 200:
         _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
+
+    r = requests.post(GOOGLE_CHAT_ENDPOINT_URL, json={"text": message})
+    if r.status_code != 200:
+        _LOGGER.error(f"cant POST to {GOOGLE_CHAT_ENDPOINT_URL}")
 
 
 def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
@@ -132,10 +140,9 @@ def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
     _LOGGER.debug(f"adding labels '{labels}' to {pull_request_url}")
 
     # TODO migrate this to IGitt
-    headers = {'Authorization': 'token %s' % SESHETA_GITHUB_ACCESS_TOKEN}
+    headers = {"Authorization": "token %s" % SESHETA_GITHUB_ACCESS_TOKEN}
 
-    requests.post(f"{pull_request_url}/labels",
-                  headers=headers,  data=json.dumps(labels))
+    requests.post(f"{pull_request_url}/labels", headers=headers, data=json.dumps(labels))
 
 
 def set_size(pull_request_url: str, sizeLabel: str) -> None:  # pragma: no cover

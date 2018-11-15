@@ -22,38 +22,41 @@ import logging
 
 import daiquiri
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user, add_labels
+from sesheta.utils import google_chat_username_by_github_user, notify_channel, add_labels
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
+daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 
 def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
     """Will handle with care."""
-    if review['state'] == 'commented':
+    if review["state"] == "commented":
         notify_channel(
-            f"_{mattermost_username_by_github_user(review['user']['login'])}_ submitted a review:comment"
-            f" for Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
-    elif review['state'] == 'approved':
+            f"_{google_chat_username_by_github_user(review['user']['login'])}_ submitted a review:comment"
+            f" for Pull Request '{pullrequest['html_url']}'"
+        )
+    elif review["state"] == "approved":
         # right now we dont want to see this notification, just add the label...
         #        notify_channel(
         #            f":white_check_mark: _{mattermost_username_by_github_user(review['user']['login'])}_ approved"
         #            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
-        add_labels(pullrequest['_links']['issue']['href'], ['approved'])
+        add_labels(pullrequest["_links"]["issue"]["href"], ["approved"])
 
 
-def process_github_pull_request_review_requested(
-        pullrequest: dict) -> None:
+def process_github_pull_request_review_requested(pullrequest: dict) -> None:
     """Will handle with care."""
-    for requested_reviewer in pullrequest['requested_reviewers']:
+    for requested_reviewer in pullrequest["requested_reviewers"]:
         notify_channel(
-            f":play_or_pause_button: a review by _{mattermost_username_by_github_user(requested_reviewer['login'])}_"
+            f"👉 a review by _{google_chat_username_by_github_user(requested_reviewer['login'])}_"
             f" has been requested for "
-            f"Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
+            f"Pull Request '{pullrequest['html_url']}'"
+        )
 
 
-def process_github_pull_request_review_submitted(pullrequest: dict, review: dict) -> None:
+def process_github_pull_request_review_submitted(
+    pullrequest: dict, review: dict
+) -> None:
     """Will handle with care."""
-    if review['state'].startswith('approved'):
+    if review["state"].startswith("approved"):
         _LOGGER.info("TODO set label 'approved' for {pullrequest['html_url']}")

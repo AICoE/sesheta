@@ -20,8 +20,9 @@
     - name: create Secret with SSH Key and Access Token for GitHub
       command: oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }}" generic sesheta-secret \
         --from-file=ssh-privatekey="{{ SESHETA_SSH_PRIVATE_KEY_PATH }}" \
-        --from-literal=github-oauth-token="{{ SESHETA_TOKEN }}" \
+        --from-literal=github-oauth-token="{{ SESHETA_GITHUB_OAUTH_TOKEN }}" \
         --type=kubernetes.io/ssh-auth \
         --from-literal=github-webhook-secret="{{ SESHETA_GITHUB_WEBHOOK_SECRET }}" \
-        --from-literal=mattermost-endpoint-url="{{ SESHETA_MATTERMOST_ENDPOINT_URL }}"
+        --from-literal=mattermost-endpoint-url="{{ SESHETA_MATTERMOST_ENDPOINT_URL }}" \
+        --from-literal=google-chat-endpoint-url="{{ SESHETA_GOOGLE_CHAT_ENDPOINT_URL }}"
       when: secret_exists is failed

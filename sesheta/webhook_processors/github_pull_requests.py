@@ -25,7 +25,7 @@ import logging
 import daiquiri
 
 
-from sesheta.utils import notify_channel, mattermost_username_by_github_user
+from sesheta.utils import notify_channel, google_chat_username_by_github_user
 
 
 daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
@@ -42,7 +42,7 @@ def process_github_open_pullrequest(pullrequest: dict) -> None:
     if pullrequest['title'].startswith('Release of'):
         return
 
-    notify_channel(f"_{mattermost_username_by_github_user(pullrequest['user']['login'])}_ just "
+    notify_channel(f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ just "
                    f"opened a pull request: '[{pullrequest['title']}]({pullrequest['html_url']})'...")
 
 
@@ -58,6 +58,6 @@ def process_github_pull_request_labeled(pullrequest: dict) -> None:
 
     for label in pullrequest['labels']:
         if label['name'] == 'needs-rebase':
-            notify_channel(f"_{mattermost_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
+            notify_channel(f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
                            f"at pull request: '[{pullrequest['title']}]({pullrequest['html_url']})' it needs "
                            f"to be rebased.")
