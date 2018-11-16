@@ -44,7 +44,7 @@ def process_github_open_pullrequest(pullrequest: dict) -> None:
 
     notify_channel(
         "new_pull_request",
-        f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ just "
+        f"{google_chat_username_by_github_user(pullrequest['user']['login'])} just "
         f"opened a pull request: '{pullrequest['title']}'",
         pullrequest["html_url"],
     )
@@ -64,7 +64,7 @@ def process_github_pull_request_labeled(pullrequest: dict) -> None:
         if label["name"] == "needs-rebase":
             notify_channel(
                 "rebase_pull_request"
-                f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
+                f"{google_chat_username_by_github_user(pullrequest['user']['login'])} please have a look "
                 f"at pull request: '{pullrequest['title']}' it needs to be rebased.",
                 pullrequest["html_url"],
             )
