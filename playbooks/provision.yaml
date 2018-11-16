@@ -26,3 +26,7 @@
         --from-literal=mattermost-endpoint-url="{{ SESHETA_MATTERMOST_ENDPOINT_URL }}" \
         --from-literal=google-chat-endpoint-url="{{ SESHETA_GOOGLE_CHAT_ENDPOINT_URL }}"
       when: secret_exists is failed
+
+    - name: "crete Secret for oauth2client.service_account.ServiceAccountCredentials.from_json_keyfile_name"
+      command: oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }} generic sesheta-pubsub-consumer \
+        --from-file=sesheta-chatbot-968e13a86991.json

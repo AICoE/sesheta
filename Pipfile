@@ -11,13 +11,13 @@ gunicorn = "*"
 igitt = "*"
 click = "==6.6"
 pygithub = "*"
+"oauth2client" = "*"
+google-api-python-client = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-timeout = "*"
 pytest-cov = "*"
-"autopep8" = "*"
-coala-bears = "*"
 
 [requires]
 python_version = "3.6"

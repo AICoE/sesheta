@@ -28,15 +28,17 @@ import logging
 
 import daiquiri
 
+from httplib2 import Http
+from apiclient.discovery import build, build_from_document
+from httplib2 import Http
+from oauth2client.service_account import ServiceAccountCredentials
 
 daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 DEBUG = bool(os.getenv("DEBUG", True))
 SESHETA_GITHUB_ACCESS_TOKEN = os.getenv("SESHETA_GITHUB_ACCESS_TOKEN", None)
-ENDPOINT_URL = os.getenv("SESHETA_MATTERMOST_ENDPOINT_URL", None)
-GOOGLE_CHAT_ENDPOINT_URL = os.getenv("SESHETA_GOOGLE_CHAT_ENDPOINT_URL", None)
-
+THOTH_DEVOPS_SPACE = "spaces/AAAAmQJAdY0"  # FIXME HARDCODED
 
 # pragma: no cover
 GITHUB_GOOGLE_CHAT_MAPPING = {
@@ -108,31 +110,33 @@ def google_chat_username_by_github_user(github: str) -> str:
     except KeyError as exp:
         _LOGGER.exception(exp)
 
-    if not mattermost:
+    if not gchat:
         return github
 
     return f"@{gchat}"
 
 
-def notify_channel(message: str) -> None:  # pragma: no cover
-    """Send message to Mattermost Channel."""
-    if ENDPOINT_URL is None:
-        _LOGGER.error("No Mattermost incoming webhook URL supplied!")
-        exit(-2)
+def notify_channel(kind: str, message: str, url: str) -> None:
+    """Send message to a Google Hangouts Chat space."""
+    scopes = ["https://www.googleapis.com/auth/chat.bot"]
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+        "/opt/app-root/etc/gcloud/sesheta-chatbot-968e13a86991.json", scopes
+    )
+    http_auth = credentials.authorize(Http())
 
-    if GOOGLE_CHAT_ENDPOINT_URL is None:
-        _LOGGER.error("No Google Chat incoming webhook URL supplied!")
-        exit(-3)
+    chat = build("chat", "v1", http=http_auth)
 
-    payload = {"text": message, "icon_url": "https://avatars1.githubusercontent.com/u/33906690"}
+    if kind.upper() in ["NEW_PULL_REQUEST", "NEW_PULL_REQUEST_REVIEW", "PULL_REQUEST_REVIEW", "REBASE_PULL_REQUEST"]:
+        response = (
+            chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body=create_pull_request_response(message, url))
+        )
+    elif kind.upper() == "NEW_ISSUE":
+        response = chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body=create_issue_response(message, url))
+    elif kind.upper() == "MERGED_PULL_REQUEST":
+        response = chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body={"text": message})
 
-    r = requests.post(ENDPOINT_URL, json=payload)
-    if r.status_code != 200:
-        _LOGGER.error(f"cant POST to {ENDPOINT_URL}")
-
-    r = requests.post(GOOGLE_CHAT_ENDPOINT_URL, json={"text": message})
-    if r.status_code != 200:
-        _LOGGER.error(f"cant POST to {GOOGLE_CHAT_ENDPOINT_URL}")
+    if response is not None:
+        response.execute()
 
 
 def add_labels(pull_request_url: str, labels: list) -> None:  # pragma: no cover
@@ -150,3 +154,74 @@ def set_size(pull_request_url: str, sizeLabel: str) -> None:  # pragma: no cover
     _LOGGER.debug(f"adding size label '{sizeLabel}' to {pull_request_url}")
 
     add_labels(pull_request_url, [sizeLabel])
+
+
+def create_pull_request_response(message: str, url: str) -> dict:
+    """Create a Google Hangouts Chat Card."""
+    response = dict()
+    cards = list()
+    widgets = list()
+    header = None
+
+    widgets.append({"textParagraph": {"text": message}})
+    widgets.append({"buttons": [{"textButton": {"text": "open this PR", "onClick": {"openLink": {"url": url}}}}]})
+    widgets.append(
+        {
+            "buttons": [
+                {
+                    "textButton": {
+                        "text": "list all open PR",
+                        "onClick": {
+                            "openLink": {
+                                "url": "https://github.com/pulls?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"
+                            }
+                        },
+                    }
+                }
+            ]
+        }
+    )
+
+    cards.append({"sections": [{"widgets": widgets}]})
+
+    response["cards"] = cards
+    id = url.split("/")[-1]
+    response["name"] = f"pull_request-{id}"
+
+    return response
+
+
+def create_issue_response(message: str, url: str) -> dict:
+    """Create a Google Hangouts Chat Card."""
+    response = dict()
+    cards = list()
+    widgets = list()
+    header = None
+
+    widgets.append({"textParagraph": {"text": message}})
+    widgets.append({"buttons": [{"textButton": {"text": "open this Issue", "onClick": {"openLink": {"url": url}}}}]})
+    widgets.append(
+        {
+            "buttons": [
+                {
+                    "textButton": {
+                        "text": "list all open Issues",
+                        "onClick": {
+                            "openLink": {
+                                "url": "https://github.com/issues?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"
+                            }
+                        },
+                    }
+                }
+            ]
+        }
+    )
+
+    cards.append({"sections": [{"widgets": widgets}]})
+
+    response["cards"] = cards
+    id = url.split("/")[-1]
+    response["name"] = f"issue-{id}"
+
+    return response
+

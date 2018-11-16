@@ -34,6 +34,7 @@ from IGitt.GitHub.GitHubIssue import GitHubToken, GitHubIssue
 from sesheta.utils import (
     notify_channel,
     random_positive_emoji,
+    random_positive_emoji2,
     calculate_pullrequest_size,
     set_size,
 )
@@ -58,25 +59,17 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
     if issue["title"].startswith("Automatic update of dependency"):
-        _LOGGER.info(
-            f"{issue['url']} is an automatic update of dependencies, not sending notification"
-        )
+        _LOGGER.info(f"{issue['url']} is an automatic update of dependencies, not sending notification")
         return
 
-    notify_channel(
-        f"{issue['user']['login']} just " f"opened an issue: {issue['title']}... 🚨"
-    )
+    notify_channel("new_issue", f"{issue['user']['login']} just opened an issue: {issue['title']}... 🚨", issue["url"])
 
     analysis = analyse_github_issue(issue)
 
     if "flake" in analysis["status"].keys():
-        _LOGGER.debug(
-            f"{issue['number']} seems to be a flake: {analysis['status']['reason']}"
-        )
+        _LOGGER.debug(f"{issue['number']} seems to be a flake: {analysis['status']['reason']}")
 
-        repo = GitHubRepository(
-            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository["full_name"]
-        )
+        repo = GitHubRepository(GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository["full_name"])
 
         try:
             repo.create_label("flake", "#f3ccff")
@@ -85,11 +78,7 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
         except IGitt.ElementAlreadyExistsError as excptn:
             _LOGGER.error(excptn)
 
-        igitt_issue = GitHubIssue(
-            GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN),
-            repository["full_name"],
-            issue["number"],
-        )
+        igitt_issue = GitHubIssue(GitHubToken(_SESHETA_GITHUB_ACCESS_TOKEN), repository["full_name"], issue["number"])
         labels = igitt_issue.labels
         labels.add("human_intervention_required")
         labels.add("potential_flake")
@@ -134,13 +123,9 @@ def get_release_issue(pullrequest: dict) -> int:
     return None
 
 
-def handle_github_open_pullrequest_merged_successfully(
-    pullrequest: dict
-) -> None:  # pragma: no cover
+def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> None:  # pragma: no cover
     """Will handle with care."""
-    _LOGGER.info(
-        f"A Pull Request has been successfully merged: '{pullrequest['title']}'"
-    )
+    _LOGGER.info(f"A Pull Request has been successfully merged: '{pullrequest['title']}'")
 
     # we simply not notify the DevOps crew about atomated dependency updates
     if pullrequest["title"].startswith("Automatic update of dependency"):
@@ -149,9 +134,7 @@ def handle_github_open_pullrequest_merged_successfully(
     # and we check if we should create a release...
     if pullrequest["title"].startswith("Release of"):
         if not eligible_release_pullrequest(pullrequest):
-            _LOGGER.warning(
-                f"Merged Release Pull Request: '{pullrequest['title']}', not eligible for release!"
-            )
+            _LOGGER.warning(f"Merged Release Pull Request: '{pullrequest['title']}', not eligible for release!")
             return
 
         commit_hash = pullrequest["merge_commit_sha"]
@@ -162,17 +145,10 @@ def handle_github_open_pullrequest_merged_successfully(
         # tag
         _LOGGER.info(f"Tagging release {release}: hash {commit_hash}.")
 
-        tag = {
-            "tag": str(release),
-            "message": f"v{release}\n",
-            "object": str(commit_hash),
-            "type": "commit",
-        }
+        tag = {"tag": str(release), "message": f"v{release}\n", "object": str(commit_hash), "type": "commit"}
 
         r = requests.post(
-            f"{pullrequest['base']['repo']['url']}/git/tags",
-            headers=_GIT_API_REQUEST_HEADERS,
-            data=json.dumps(tag),
+            f"{pullrequest['base']['repo']['url']}/git/tags", headers=_GIT_API_REQUEST_HEADERS, data=json.dumps(tag)
         )
 
         if r.status_code == 201:
@@ -187,9 +163,7 @@ def handle_github_open_pullrequest_merged_successfully(
             )
 
         # comment on issue
-        _LOGGER.info(
-            f"Commenting on {release_issue} that we tagged {release} on hash {commit_hash}."
-        )
+        _LOGGER.info(f"Commenting on {release_issue} that we tagged {release} on hash {commit_hash}.")
 
         comment = {
             "body": f"I have tagged commit "
@@ -214,9 +188,10 @@ def handle_github_open_pullrequest_merged_successfully(
 
         if not _DRY_RUN:
             notify_channel(
+                "new_tag",
                 f" I have tagged {commit_hash} to be release {release} of"
-                f" {pullrequest['base']['repo']['full_name']} "
-                + random_positive_emoji2()
+                f" {pullrequest['base']['repo']['full_name']} " + random_positive_emoji2(),
+                pullrequest["url"],
             )
 
         # happy! 💕
@@ -224,9 +199,10 @@ def handle_github_open_pullrequest_merged_successfully(
         # otherwise we notify of merge
         if not _DRY_RUN:
             notify_channel(
-                random_positive_emoji2()
-                + f" Pull Request '{pullrequest['title']}' was successfully "
-                f"merged into '{pullrequest['base']['repo']['full_name']}' "
+                "merged_pull_request",
+                random_positive_emoji2() + f" Pull Request '{pullrequest['title']}' was successfully "
+                f"merged into '{pullrequest['base']['repo']['full_name']}' ",
+                pullrequest["url"],
             )
 
     return
@@ -242,9 +218,7 @@ def _add_size_label(pullrequest: dict) -> None:  # pragma: no cover
 
     sizeLabel = calculate_pullrequest_size(pullrequest)
 
-    _LOGGER.debug(
-        f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}"
-    )
+    _LOGGER.debug(f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
 
     if sizeLabel:
         # TODO check if there is a size label, if it is the same: skip
@@ -285,9 +259,7 @@ def handle_github_webhook():  # pragma: no cover
                 process_github_open_pullrequest(payload["pull_request"])
             elif action == "closed":
                 if payload["pull_request"]["merged"]:
-                    handle_github_open_pullrequest_merged_successfully(
-                        payload["pull_request"]
-                    )
+                    handle_github_open_pullrequest_merged_successfully(payload["pull_request"])
             elif action == "review_requested":
                 process_github_pull_request_review_requested(payload["pull_request"])
             elif action == "labeled":
@@ -296,9 +268,7 @@ def handle_github_webhook():  # pragma: no cover
             if payload["action"] == "opened":
                 handle_github_open_issue(payload["issue"], payload["repository"])
         elif event == "pull_request_review":
-            process_github_pull_request_review(
-                payload["pull_request"], payload["review"]
-            )
+            process_github_pull_request_review(payload["pull_request"], payload["review"])
 
     else:
         _LOGGER.error(f"Webhook secret mismatch: me: {hashhex} != them: {signature}")

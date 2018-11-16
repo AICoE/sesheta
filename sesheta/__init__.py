@@ -22,27 +22,24 @@ import os
 from flask import Flask
 
 
-from .utils import notify_channel
-
 from .webhooks import webhooks
 from .metrics import metrics
 from .humans import website
 from .probes import probes
 
 
-__name__ = 'sesheta'
-__version__ = "2.2.2"
-__author__ = 'Christoph Görn <goern@redhat.com>'
+__name__ = "sesheta"
+__version__ = "2.3.1"
+__author__ = "Christoph Görn <goern@redhat.com>"
 
 
 def create_application():
     """Create, configure and return the Flask application."""
     app = Flask(__name__)
-    app.config['SESHETA_GITHUB_WEBHOOK_SECRET'] = os.environ.get(
-        'KEBECHET_GITHUB_WEBHOOK_SECRET')
+    app.config["SESHETA_GITHUB_WEBHOOK_SECRET"] = os.environ.get("KEBECHET_GITHUB_WEBHOOK_SECRET")
     app.register_blueprint(webhooks)
     app.register_blueprint(metrics)
     app.register_blueprint(probes)
     app.register_blueprint(website)
 
-    return(app)
+    return app

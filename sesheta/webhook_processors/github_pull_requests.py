@@ -28,7 +28,7 @@ import daiquiri
 from sesheta.utils import notify_channel, google_chat_username_by_github_user
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
+daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 
@@ -36,28 +36,35 @@ def process_github_open_pullrequest(pullrequest: dict) -> None:
     """Will handle with care."""
     _LOGGER.info(f"A Pull Request has been opened: {pullrequest['url']}")
 
-    if pullrequest['title'].startswith('Automatic update of dependency'):
+    if pullrequest["title"].startswith("Automatic update of dependency"):
         return
 
-    if pullrequest['title'].startswith('Release of'):
+    if pullrequest["title"].startswith("Release of"):
         return
 
-    notify_channel(f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ just "
-                   f"opened a pull request: '[{pullrequest['title']}]({pullrequest['html_url']})'...")
+    notify_channel(
+        "new_pull_request",
+        f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ just "
+        f"opened a pull request: '{pullrequest['title']}'",
+        pullrequest["html_url"],
+    )
 
 
 def process_github_pull_request_labeled(pullrequest: dict) -> None:
     """Do what needs to be done based on PR labels."""
     _LOGGER.debug(f"Acting upon labels of Pull Request '{pullrequest['url']}'")
 
-    if pullrequest['title'].startswith('Automatic update of dependency'):
+    if pullrequest["title"].startswith("Automatic update of dependency"):
         return
 
-    if pullrequest['title'].startswith('Release of'):
+    if pullrequest["title"].startswith("Release of"):
         return
 
-    for label in pullrequest['labels']:
-        if label['name'] == 'needs-rebase':
-            notify_channel(f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
-                           f"at pull request: '[{pullrequest['title']}]({pullrequest['html_url']})' it needs "
-                           f"to be rebased.")
+    for label in pullrequest["labels"]:
+        if label["name"] == "needs-rebase":
+            notify_channel(
+                "rebase_pull_request"
+                f"_{google_chat_username_by_github_user(pullrequest['user']['login'])}_ please have a look "
+                f"at pull request: '{pullrequest['title']}' it needs to be rebased.",
+                pullrequest["html_url"],
+            )
