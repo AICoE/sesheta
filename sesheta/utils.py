@@ -118,6 +118,7 @@ def google_chat_username_by_github_user(github: str) -> str:
 
 def notify_channel(kind: str, message: str, url: str) -> None:
     """Send message to a Google Hangouts Chat space."""
+    response = None
     scopes = ["https://www.googleapis.com/auth/chat.bot"]
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         "/opt/app-root/etc/gcloud/sesheta-chatbot-968e13a86991.json", scopes
