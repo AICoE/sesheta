@@ -34,7 +34,7 @@ def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
     if review["state"] == "commented":
         notify_channel(
             "pull_request_review",
-            f"_{google_chat_username_by_github_user(review['user']['login'])}_ submitted a review:comment"
+            f"{google_chat_username_by_github_user(review['user']['login'])} submitted a review:comment"
             f" for Pull Request '{pullrequest['title']}'",
             pullrequest["html_url"],
         )
@@ -51,7 +51,7 @@ def process_github_pull_request_review_requested(pullrequest: dict) -> None:
     for requested_reviewer in pullrequest["requested_reviewers"]:
         notify_channel(
             "new_pull_request_review",
-            f"👉 a review by _{google_chat_username_by_github_user(requested_reviewer['login'])}_"
+            f"👉 a review by {google_chat_username_by_github_user(requested_reviewer['login'])}"
             f" has been requested for "
             f"Pull Request '{pullrequest['title']}'",
             pullrequest["html_url"],

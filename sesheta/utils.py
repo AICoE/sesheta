@@ -113,7 +113,7 @@ def google_chat_username_by_github_user(github: str) -> str:
     if not gchat:
         return github
 
-    return f"@{gchat}"
+    return f"{gchat}"
 
 
 def notify_channel(kind: str, message: str, url: str) -> None:
