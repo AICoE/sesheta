@@ -28,39 +28,35 @@ from github import Github
 from github import UnknownObjectException
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
+daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 
-CICD_CONTEXT_ID = 'continuous-integration/jenkins/pr-merge'
-DO_NOT_MERGE_LABELS = ['do-not-merge',
-                       'work-in-progress',
-                       'do-not-merge/work-in-progress'
-                       'do-not-merge/hold'
-                       ]
+CICD_CONTEXT_ID = "continuous-integration/jenkins/pr-merge"
+DO_NOT_MERGE_LABELS = ["do-not-merge", "work-in-progress", "do-not-merge/work-in-progress" "do-not-merge/hold"]
 
 
 def init_github_interface(SESHETA_GITHUB_ACCESS_TOKEN):  # pragma: no cover
     """init_github_interface will read the configuration and return initilalized github and org objects."""
     github = Github(SESHETA_GITHUB_ACCESS_TOKEN)
 
-    with open("config.yaml", 'r') as config:
+    with open("config.yaml", "r") as config:
         RUNTIME_CONFIG = yaml.load(config)
 
-    GITHUB_ORGANIZATION = RUNTIME_CONFIG['organization']
-    GITHUB_REPOSITORIES = RUNTIME_CONFIG['repositories']
-    DEFAULT_LABELS = RUNTIME_CONFIG['defaultLabels']
+    GITHUB_ORGANIZATION = RUNTIME_CONFIG["organization"]
+    GITHUB_REPOSITORIES = RUNTIME_CONFIG["repositories"]
+    DEFAULT_LABELS = RUNTIME_CONFIG["defaultLabels"]
 
     org = github.get_organization(GITHUB_ORGANIZATION)
 
     if org is None:
-        _LOGGER.error('Can not get a Github Organization or User...')
+        _LOGGER.error("Can not get a Github Organization or User...")
         exit(-2)
 
     return github, org, GITHUB_ORGANIZATION, GITHUB_REPOSITORIES, DEFAULT_LABELS
 
 
-def ensure_label_present(repo, name, color, current_labels, description=''):  # pragma: no cover
+def ensure_label_present(repo, name, color, current_labels, description=""):  # pragma: no cover
     """Ensure the given repo has the label with the right color."""
     present_labels = []
 
@@ -77,7 +73,7 @@ def ensure_label_present(repo, name, color, current_labels, description=''):  # 
             _LOGGER.error(e)
 
             repo.create_issue(f"can't create '{name}' label")
-            _LOGGER.info('issue created!')
+            _LOGGER.info("issue created!")
     else:
         _LOGGER.debug(f"label '{name}' was present")
 

@@ -62,7 +62,9 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
         _LOGGER.info(f"{issue['url']} is an automatic update of dependencies, not sending notification")
         return
 
-    notify_channel("new_issue", f"{issue['user']['login']} just opened an issue: {issue['title']}... 🚨", issue["url"])
+    notify_channel(
+        "new_issue", f"{issue['user']['login']} just opened an issue: {issue['title']}... 🚨", issue["html_url"]
+    )
 
     analysis = analyse_github_issue(issue)
 

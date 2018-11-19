@@ -23,20 +23,18 @@ import logging
 import daiquiri
 
 
-daiquiri.setup(level=logging.DEBUG, outputs=('stdout', 'stderr'))
+daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 
 def analyse_github_issue(issue: dict) -> dict:
     """Will analyse a GitHub issue and categorize it."""
-    result = {
-        'url': issue['url'],
-        'status': {}
-    }
+    result = {"url": issue["url"], "status": {}}
 
-    for line in issue['body'].splitlines():
-        if 'Failed to establish a new connection: [Errno -2] Name or service not known' in line:
-            result['status'].update(
-                {'flake': True, 'reason': 'Failed to establish a new connection: [Errno -2] Name or service not known'})
+    for line in issue["body"].splitlines():
+        if "Failed to establish a new connection: [Errno -2] Name or service not known" in line:
+            result["status"].update(
+                {"flake": True, "reason": "Failed to establish a new connection: [Errno -2] Name or service not known"}
+            )
 
     return result

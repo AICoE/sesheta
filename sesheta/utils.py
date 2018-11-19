@@ -225,4 +225,3 @@ def create_issue_response(message: str, url: str) -> dict:
     response["name"] = f"issue-{id}"
 
     return response
-

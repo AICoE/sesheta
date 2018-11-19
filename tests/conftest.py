@@ -25,7 +25,7 @@ import pytest
 
 @pytest.fixture()
 def issue115():  # Ignore PyDocStyleBear
-    with open('./fixtures/issue-115.json') as f:
+    with open("./fixtures/issue-115.json") as f:
         data = json.load(f)
 
     return data
@@ -33,7 +33,7 @@ def issue115():  # Ignore PyDocStyleBear
 
 @pytest.fixture()
 def pull_request_review_submitted():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_review_submitted.json') as f:
+    with open("./fixtures/pull_request_review_submitted.json") as f:
         data = json.load(f)
 
     return data
@@ -41,7 +41,7 @@ def pull_request_review_submitted():  # Ignore PyDocStyleBear
 
 @pytest.fixture()
 def pull_request_review_submitted_approved():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_review_submitted_approved.json') as f:
+    with open("./fixtures/pull_request_review_submitted_approved.json") as f:
         data = json.load(f)
 
     return data
@@ -49,7 +49,7 @@ def pull_request_review_submitted_approved():  # Ignore PyDocStyleBear
 
 @pytest.fixture()
 def pull_request_review_requested():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_review_requested.json') as f:
+    with open("./fixtures/pull_request_review_requested.json") as f:
         data = json.load(f)
 
     return data
@@ -57,7 +57,7 @@ def pull_request_review_requested():  # Ignore PyDocStyleBear
 
 @pytest.fixture()
 def pull_request_merged():  # Ignore PyDocStyleBear
-    with open('./fixtures/pull_request_merged.json') as f:
+    with open("./fixtures/pull_request_merged.json") as f:
         data = json.load(f)
 
     return data

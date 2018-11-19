@@ -26,8 +26,8 @@ class TestIssues(object):  # Ignore PyDocStyleBear
     @staticmethod
     # Ignore PyDocStyleBear
     def test_analyse_github_issue(issue115):
-        assert issue115['url'] == "https://api.github.com/repos/thoth-station/package-extract/issues/115"
+        assert issue115["url"] == "https://api.github.com/repos/thoth-station/package-extract/issues/115"
 
         analysis = analyse_github_issue(issue115)
 
-        assert analysis['status']['flake'] is True
+        assert analysis["status"]["flake"] is True

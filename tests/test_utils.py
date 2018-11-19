@@ -30,10 +30,8 @@ class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
         assert pull_request_merged
         assert pull_request_review_requested
 
-        assert eligible_release_pullrequest(
-            pull_request_merged) == True  # Ignore PycodestyleBear (E712)
-        assert eligible_release_pullrequest(
-            pull_request_review_requested) == False  # Ignore PycodestyleBear (E712)
+        assert eligible_release_pullrequest(pull_request_merged) == True  # Ignore PycodestyleBear (E712)
+        assert eligible_release_pullrequest(pull_request_review_requested) == False  # Ignore PycodestyleBear (E712)
 
     @staticmethod
     # Ignore PyDocStyleBear
@@ -47,7 +45,6 @@ class TestPullRequestUtilities(object):  # Ignore PyDocStyleBear
 
     @staticmethod
     def test_mattermost_username_by_github_user():  # Ignore PyDocStyleBear
-        assert mattermost_username_by_github_user('goern') == '@goern'
-        assert mattermost_username_by_github_user('fridex') == '@fridolin'
-        assert mattermost_username_by_github_user(
-            'ghostbuster') == 'ghostbuster'
+        assert mattermost_username_by_github_user("goern") == "@goern"
+        assert mattermost_username_by_github_user("fridex") == "@fridolin"
+        assert mattermost_username_by_github_user("ghostbuster") == "ghostbuster"

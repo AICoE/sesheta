@@ -22,10 +22,10 @@
 from flask import Blueprint, jsonify
 
 
-probes = Blueprint('probes', __name__, url_prefix='/_healthz')
+probes = Blueprint("probes", __name__, url_prefix="/_healthz")
 
 
-@probes.route('/', methods=['GET'])
+@probes.route("/", methods=["GET"])
 def readyness():  # pragma: no cover
     """easy."""
     return jsonify({"status": "ok!"}), 200

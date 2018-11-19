@@ -27,19 +27,19 @@ class TestPullRequests(object):  # Ignore PyDocStyleBear
     # Ignore PyDocStyleBear
     def test_pull_request_size(pull_request_review_requested):
         assert pull_request_review_requested
-        assert pull_request_review_requested['action'] == 'review_requested'
-        assert 'requested_reviewers' in pull_request_review_requested.keys()
+        assert pull_request_review_requested["action"] == "review_requested"
+        assert "requested_reviewers" in pull_request_review_requested.keys()
 
-        assert calculate_pullrequest_size(
-            pull_request_review_requested['pull_request']) == 'size/XS'
+        assert calculate_pullrequest_size(pull_request_review_requested["pull_request"]) == "size/XS"
 
     @staticmethod
     # Ignore PyDocStyleBear
     def test_review_approved(pull_request_review_submitted_approved):
         assert pull_request_review_submitted_approved
-        assert pull_request_review_submitted_approved['action'] == 'submitted'
+        assert pull_request_review_submitted_approved["action"] == "submitted"
 
-        assert pull_request_review_submitted_approved['review']['state'] == 'approved'
+        assert pull_request_review_submitted_approved["review"]["state"] == "approved"
+
 
 #        add_labels(
 #            pull_request_review_submitted_approved['pull_request']['_links']['issue'], ['approved'])

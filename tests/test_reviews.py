@@ -22,9 +22,7 @@
 from sesheta.webhook_processors.github_reviews import *
 
 
-_REVIEW_STATES = [
-    'approved', 'commented'
-]
+_REVIEW_STATES = ["approved", "commented"]
 
 
 class TestReviews(object):  # Ignore PyDocStyleBear
@@ -32,8 +30,7 @@ class TestReviews(object):  # Ignore PyDocStyleBear
     # Ignore PyDocStyleBear
     def test_handle_github_pull_request_review_requested(pull_request_review_requested):
         assert pull_request_review_requested
-        assert pull_request_review_requested['action'] == 'review_requested'
-        assert 'requested_reviewers' in pull_request_review_requested.keys()
+        assert pull_request_review_requested["action"] == "review_requested"
+        assert "requested_reviewers" in pull_request_review_requested.keys()
 
-        process_github_pull_request_review_requested(
-            pull_request_review_requested['pull_request'])
+        process_github_pull_request_review_requested(pull_request_review_requested["pull_request"])

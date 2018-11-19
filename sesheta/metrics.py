@@ -22,10 +22,10 @@
 from flask import Blueprint, jsonify
 
 
-metrics = Blueprint('metrics', __name__, url_prefix='/metrics')
+metrics = Blueprint("metrics", __name__, url_prefix="/metrics")
 
 
-@metrics.route('/', methods=['GET'])
+@metrics.route("/", methods=["GET"])
 def send_prometheus_registry_dump():  # pragma: no cover
     """easy."""
     return jsonify({"message": "thanks!"}), 200
