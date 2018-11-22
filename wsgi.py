@@ -29,7 +29,7 @@ init_logging()
 
 _LOGGER = logging.getLogger("thoth.sesheta")
 
-logging.getLogger("googleapicliet.discovery_cache").setLevel(logging.ERROR)
+logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
 
 _LOGGER.info(f"Hi, I am Sesheta, I will handle your incoming GitHub webhooks, " f"and I'm running v{__version__}")
