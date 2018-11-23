@@ -59,7 +59,11 @@ def handle_github_open_issue(issue: dict, repository: dict) -> None:  # pragma: 
     _LOGGER.info(f"An Issue has been opened: {issue['url']}")
 
     if issue["title"].startswith("Automatic update of dependency"):
-        _LOGGER.info(f"{issue['url']} is an automatic update of dependencies, not sending notification")
+        _LOGGER.info(f"{issue['url']} is an 'automatic update of dependencies', not sending notification")
+        return
+
+    if issue["title"].startswith("Failed to update dependencies to their latest version"):
+        _LOGGER.info(f"{issue['url']} is an 'failed to update dependencies', not sending notification")
         return
 
     notify_channel(
