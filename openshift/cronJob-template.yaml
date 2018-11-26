@@ -74,7 +74,7 @@ objects:
           template:
             spec:
               containers:
-              - name: scrum_standup
+              - name: scrum-standup
                 image: sesheta:latest
                 env:
                 - name: APP_FILE
@@ -88,6 +88,19 @@ objects:
                   requests:
                     cpu: 100m
                     memory: 64Mi
+                volumeMounts:
+                  - mountPath: /opt/app-root/src/etc
+                    name: service-account
+                    readOnly: true
+              volumes:
+                - name: service-account
+                  secret:
+                    defaultMode: 420
+                    items:
+                      - key: sesheta-chatbot-968e13a86991.json
+                        path: credentials.json
+                    secretName: sesheta-pubsub-consumer
+              restartPolicy: Never
       schedule: 29 14 * * 1,3,5
       suspend: false
 

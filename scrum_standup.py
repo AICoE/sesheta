@@ -86,7 +86,7 @@ if __name__ == "__main__":
     response["name"] = f"scrum_standup"
 
     scopes = ["https://www.googleapis.com/auth/chat.bot"]
-    credentials = ServiceAccountCredentials.from_json_keyfile_name("run/credentials.json", scopes)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name("etc/credentials.json", scopes)
     http_auth = credentials.authorize(Http())
 
     chat = build("chat", "v1", http=http_auth)
