@@ -12,22 +12,13 @@ metadata:
       This is sesheta Webhooks Deployment, this template is meant to be used by Bots,
       but could also be used by humans...
     openshift.io/display-name: sesheta BuildConfig
-    version: 2.1.0
+    version: 2.3.3
     tags: thoth,ai-stacks,aistacks,sesheta
     template.openshift.io/documentation-url: https://github.com/thoth-station/sesheta/
     template.openshift.io/long-description: This is sesheta used for automatic package releases and updates.
     template.openshift.io/provider-display-name: Red Hat, Inc.
 
 objects:
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: sesheta-configmap
-      labels:
-        app: sesheta
-    data:
-      sesheta-verbose: ${SESHETA_VERBOSE}
-
   - kind: Route
     apiVersion: v1
     metadata:
@@ -81,7 +72,7 @@ objects:
         spec:
           containers:
             - name: sesheta-webhooks
-              image: sesheta-webhooks:latest
+              image: sesheta:latest
               env:
                 - name: SESHETA_GITHUB_WEBHOOK_SECRET
                   valueFrom:
@@ -118,11 +109,4 @@ objects:
               - sesheta-webhooks
             from:
               kind: ImageStreamTag
-              name: sesheta-webhooks:latest
-
-parameters:
-  - description: Sesheta verbose mode.
-    displayName: Sesheta verbose
-    required: true
-    name: sesheta_VERBOSE
-    value: "1"
+              name: sesheta:latest

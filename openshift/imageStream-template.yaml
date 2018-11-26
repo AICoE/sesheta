@@ -9,7 +9,7 @@ metadata:
     description: >
       This is sesheta ImageStream, this template is meant to be used by Bots, but could also be used by humans...
     openshift.io/display-name: sesheta ImageStream
-    version: 2.0.0-dev
+    version: 2.3.3
     tags: poc,thoth,ai-stacks,sesheta
     template.openshift.io/documentation-url: https://github.com/thoth-station/sesheta/
     template.openshift.io/long-description: This is sesheta used for automatic package releases and updates.
@@ -21,7 +21,7 @@ objects:
     metadata:
       labels:
         app: sesheta
-      name: sesheta-webhooks
+      name: sesheta
     spec:
       lookupPolicy:
         local: true

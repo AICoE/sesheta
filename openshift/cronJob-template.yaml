@@ -12,7 +12,7 @@ metadata:
       This is Sesheta CronJob, this template is meant to be used by Bots,
       but could also be used by humans...
     openshift.io/display-name: 'Sesheta: Bot Cohort'
-    version: 0.6.2
+    version: 2.3.3
     tags: poc,thoth,sesheta,ai-stacks
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
@@ -57,6 +57,39 @@ objects:
                       memory: "128Mi"
                       cpu: "250m"
               restartPolicy: Never
+
+  - kind: CronJob
+    apiVersion: batch/v1beta1
+    metadata:
+      name: sesheta-scrum
+      labels:
+        app: sesheta
+        component: scrum-standup
+    spec:
+      concurrencyPolicy: Forbid
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 2
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: scrum_standup
+                image: sesheta:latest
+                env:
+                - name: APP_FILE
+                  value: scrum_standup.py
+                - name: SESHETA_BOT_MESSAGE
+                  value: "the scrum is due in one minute... dial in to https://bluejeans.com/5618223545"
+                resources:
+                  limits:
+                    cpu: 250m
+                    memory: 128Mi
+                  requests:
+                    cpu: 100m
+                    memory: 64Mi
+      schedule: 29 14 * * 1,3,5
+      suspend: false
 
   - kind: ImageStream
     apiVersion: v1

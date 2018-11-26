@@ -107,4 +107,5 @@ certs/
 coverage_html_report/
 *.retry
 sesheta-chatbot-968e13a86991.json
+run/*
 .vault_pass
