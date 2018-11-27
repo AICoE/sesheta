@@ -36,5 +36,9 @@ def analyse_github_issue(issue: dict) -> dict:
             result["status"].update(
                 {"flake": True, "reason": "Failed to establish a new connection: [Errno -2] Name or service not known"}
             )
+        elif "pexpect.exceptions.TIMEOUT: <pexpect.popen_spawn.PopenSpawn" in line:
+            result["status"].update(
+                {"flake": True, "reason": "pexpect.exceptions.TIMEOUT: <pexpect.popen_spawn.PopenSpawn>"}
+            )
 
     return result
