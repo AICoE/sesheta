@@ -79,7 +79,7 @@ objects:
                 env:
                 - name: APP_FILE
                   value: scrum_standup.py
-                - name: SESHETA_BOT_MESSAGE
+                - name: SESHETA_SCRUM_MESSAGE
                   value: "the scrum is due in one minute... dial in to https://bluejeans.com/5618223545"
                 resources:
                   limits:

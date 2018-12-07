@@ -20,8 +20,8 @@
 
 
 import logging
+import json
 
-import yaml
 import daiquiri
 
 from github import Github
@@ -40,8 +40,8 @@ def init_github_interface(SESHETA_GITHUB_ACCESS_TOKEN):  # pragma: no cover
     """init_github_interface will read the configuration and return initilalized github and org objects."""
     github = Github(SESHETA_GITHUB_ACCESS_TOKEN)
 
-    with open("config.yaml", "r") as config:
-        RUNTIME_CONFIG = yaml.load(config)
+    with open("config.json", "r") as config:
+        RUNTIME_CONFIG = json.load(config)
 
     GITHUB_ORGANIZATION = RUNTIME_CONFIG["organization"]
     GITHUB_REPOSITORIES = RUNTIME_CONFIG["repositories"]

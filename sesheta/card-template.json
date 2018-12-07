@@ -1,0 +1,33 @@
+{
+    "cards": [
+        "sections": [{
+                "header": {
+                    "title": "Sesheta",
+                    "subtitle": "https://github.com/sesheta",
+                    "imageUrl": "https://avatars1.githubusercontent.com/u/33906690",
+                    "imageStyle": "IMAGE",
+                },
+                {
+                    "widgets": [{
+                            "textParagraph": {
+                                "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
+                            }
+                        },
+                        {
+                            "buttons": [{
+                                "textButton": {
+                                    "text": "open",
+                                    "onClick": {
+                                        "openLink": {
+                                            "url": "https://..."
+                                        }
+                                    }
+                                }
+                            }]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
