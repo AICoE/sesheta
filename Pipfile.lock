@@ -370,10 +370,10 @@
         },
         "six": {
             "hashes": [
-                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9",
-                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
+                "sha256:3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c",
+                "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
             ],
-            "version": "==1.11.0"
+            "version": "==1.12.0"
         },
         "smmap2": {
             "hashes": [
@@ -384,11 +384,11 @@
         },
         "thoth-common": {
             "hashes": [
-                "sha256:b20460fcc83e8a153e197b1da00e97fcceac70eec3b94edc837335f708aaeb4e",
-                "sha256:df73a271ba472e7fd513f3d351d18e4d42f23d5efef62ef0cf2dd637abf88509"
+                "sha256:a5f8d8c08c6a3db5da871bbbbeebfce109c99b865e0e3cc81cac60106117886b",
+                "sha256:ad2fcd466c1245ad35bbf2f7ce2c444b6d02861d625a69fefb280d3a98c919a5"
             ],
             "index": "pypi",
-            "version": "==0.4.6"
+            "version": "==0.5.0"
         },
         "tzlocal": {
             "hashes": [
@@ -610,10 +610,10 @@
         },
         "six": {
             "hashes": [
-                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9",
-                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
+                "sha256:3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c",
+                "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
             ],
-            "version": "==1.11.0"
+            "version": "==1.12.0"
         },
         "toml": {
             "hashes": [
