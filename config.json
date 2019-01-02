@@ -11,7 +11,6 @@
         "common",
         "core",
         "cve-update-job",
-        "dependency-monkey",
         "graph-refresh-job",
         "graph-sync-job",
         "jupyter-notebook",
@@ -25,7 +24,8 @@
         "storages",
         "thamos",
         "user-api",
-        "python"
+        "python",
+        "isis-api"
     ],
     "defaultLabels": [{
             "name": "bot",
