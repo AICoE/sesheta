@@ -313,10 +313,10 @@
         },
         "pygithub": {
             "hashes": [
-                "sha256:5d3e3bdee80be63a1e5aaca5689ff450a4e7f7dfac728577fdb9caac080c5479"
+                "sha256:263102b43a83e2943900c1313109db7a00b3b78aeeae2c9137ba694982864872"
             ],
             "index": "pypi",
-            "version": "==1.43.4"
+            "version": "==1.43.5"
         },
         "pyjwt": {
             "hashes": [
@@ -578,11 +578,11 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:257543f54ebeb964bfc503741ac35748ef8993a36ca8c93f5a7bccb1b4d5fa62",
-                "sha256:53d04fea752a4edcdd814146e78cca724036491434ff924333514ec51014aecf"
+                "sha256:238df538ea18c9004981202e5bbbd56c47039fe8230c45d3b1f255d97181b716",
+                "sha256:3c031c10a276587ba5e73b3189c33749973d66473f77ecb53715e27cd2650348"
             ],
             "index": "pypi",
-            "version": "==2.3.0.dev0"
+            "version": "==2.3.0.dev1"
         },
         "pytest": {
             "hashes": [
