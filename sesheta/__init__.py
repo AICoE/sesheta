@@ -29,7 +29,7 @@ from .probes import probes
 
 
 __name__ = "sesheta"
-__version__ = "2.4.0"
+__version__ = "2.4.1"
 __author__ = "Christoph Görn <goern@redhat.com>"
 
 

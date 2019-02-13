@@ -7,6 +7,7 @@
         "amun-hwinfo",
         "analyzer",
         "build-analysers",
+        "build-watcher",
         "cleanup-job",
         "common",
         "core",
@@ -16,6 +17,8 @@
         "jupyter-notebook",
         "lab",
         "misc",
+        "management-api",
+        "metrics-exporter",
         "notebooks",
         "package-extract",
         "package-releases-job",
@@ -25,7 +28,10 @@
         "thamos",
         "user-api",
         "python",
-        "isis-api"
+        "isis-api",
+        "osiris",
+        "osiris-build-observer",
+        "workload-operator"
     ],
     "defaultLabels": [{
             "name": "bot",
