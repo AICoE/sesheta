@@ -174,7 +174,7 @@ def create_pull_request_response(message: str, url: str) -> dict:
                         "text": "list all open PR",
                         "onClick": {
                             "openLink": {
-                                "url": "https://github.com/pulls?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"
+                                "url": "https://github.com/pulls?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"  # Ignore PycodestyleBear (E501)
                             }
                         },
                     }
@@ -209,7 +209,7 @@ def create_issue_response(message: str, url: str) -> dict:
                         "text": "list all open Issues",
                         "onClick": {
                             "openLink": {
-                                "url": "https://github.com/issues?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"
+                                "url": "https://github.com/issues?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"  # Ignore PycodestyleBear (E501)
                             }
                         },
                     }
