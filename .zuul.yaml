@@ -2,16 +2,16 @@
     check:
       queue: sesheta
       jobs:
-        - linters
+        - "thoth-coala"
     gate:
       queue: sesheta
       jobs:
-        - linters
+        - "thoth-coala"
     post:
       jobs:
-        - trigger-build:
+        - "trigger-build":
             vars:
               webhook_url: "https://paas.upshift.redhat.com/oapi/v1/namespaces/aicoe-prod-bots/buildconfigs/kebechet-webhooks/webhooks"
     kebechet-auto-gate:
       jobs:
-        - linters
+        - "thoth-coala"

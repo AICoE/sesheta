@@ -33,14 +33,18 @@ from thoth.common import init_logging
 
 
 class InvalidPayload(Exception):
+    """This might be raised via Google Hangout Chat."""
+
     pass
 
 
 class HTTPError(Exception):
+    """This might be raised via Google Hangout Chat."""
+
     pass
 
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 
 DEBUG = bool(os.getenv("DEBUG", True))
