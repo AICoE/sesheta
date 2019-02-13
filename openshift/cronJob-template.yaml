@@ -74,24 +74,24 @@ objects:
           template:
             spec:
               containers:
-              - name: scrum-standup
-                image: sesheta:latest
-                env:
-                - name: APP_FILE
-                  value: scrum_standup.py
-                - name: SESHETA_SCRUM_MESSAGE
-                  value: "the scrum is due in one minute... dial in to https://bluejeans.com/5618223545"
-                resources:
-                  limits:
-                    cpu: 250m
-                    memory: 128Mi
-                  requests:
-                    cpu: 100m
-                    memory: 64Mi
-                volumeMounts:
-                  - mountPath: /opt/app-root/src/etc
-                    name: service-account
-                    readOnly: true
+                - name: scrum-standup
+                  image: sesheta:latest
+                  env:
+                    - name: APP_FILE
+                      value: scrum_standup.py
+                    - name: SESHETA_SCRUM_MESSAGE
+                      value: "the scrum is due in one minute... dial in to https://bluejeans.com/5618223545"
+                  resources:
+                    limits:
+                      cpu: 250m
+                      memory: 128Mi
+                    requests:
+                      cpu: 100m
+                      memory: 64Mi
+                  volumeMounts:
+                    - mountPath: /opt/app-root/src/etc
+                      name: service-account
+                      readOnly: true
               volumes:
                 - name: service-account
                   secret:
