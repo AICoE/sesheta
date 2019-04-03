@@ -403,10 +403,10 @@
         },
         "thoth-common": {
             "hashes": [
-                "sha256:ec1987ee0fceaf7829c05ef86b2d32b613730e7fcdb595ced595e99eb96a52dc"
+                "sha256:8b3c7179c29843e53a640789c2fd31acd0586b21596ccfb324040b107b51ae03"
             ],
             "index": "pypi",
-            "version": "==0.8.1"
+            "version": "==0.8.2"
         },
         "tzlocal": {
             "hashes": [
@@ -432,10 +432,10 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:96da23fa8ccecbc3ae832a83df5c722c11547d021637faacb0bec4dd2f4666c8",
-                "sha256:ca5c2dcd367d6c0df87185b9082929d255358f5391923269335782b213d52655"
+                "sha256:0a73e8bb2ff2feecfc5d56e6f458f5b99290ef34f565ffb2665801ff7de6af7a",
+                "sha256:7fad9770a8778f9576693f0cc29c7dcc36964df916b83734f4431c0e612a7fbc"
             ],
-            "version": "==0.15.1"
+            "version": "==0.15.2"
         },
         "wrapt": {
             "hashes": [
