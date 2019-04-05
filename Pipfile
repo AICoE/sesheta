@@ -13,6 +13,7 @@ click = "==6.6"
 pygithub = "*"
 "oauth2client" = "*"
 google-api-python-client = "*"
+daiquiri = "*"
 
 [dev-packages]
 pytest = "*"

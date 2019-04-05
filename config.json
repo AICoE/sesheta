@@ -14,14 +14,18 @@
         "cve-update-job",
         "graph-refresh-job",
         "graph-sync-job",
+        "graph-sync-scheduler",
+        "isis-api",
         "jupyter-notebook",
         "lab",
+        "management-api",
         "misc",
         "management-api",
         "metrics-exporter",
         "notebooks",
         "package-extract",
         "package-releases-job",
+        "python",
         "result-api",
         "solver",
         "storages",
@@ -32,6 +36,9 @@
         "osiris",
         "osiris-build-observer",
         "workload-operator"
+    ],
+    "defaultTopics": [
+        "thoth"
     ],
     "defaultLabels": [{
             "name": "bot",

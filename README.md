@@ -55,7 +55,7 @@ To deploy sesheta on an OpenShift cluster use the following Ansible command with
 
 ## Copyright
 
-Copyright (C) 2017,2018 Red Hat Inc.
+Copyright (C) 2017,2018,2019 Red Hat Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
