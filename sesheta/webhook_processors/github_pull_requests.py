@@ -36,7 +36,9 @@ def process_github_open_pullrequest(pullrequest: dict) -> None:
     """Will handle with care."""
     _LOGGER.info(f"A Pull Request has been opened: {pullrequest['url']}")
 
-    if pullrequest["title"].startswith("Automatic update of dependency"):
+    if pullrequest["title"].startswith("Automatic update of dependency") or pullrequest["title"].startswith(
+        "Routine Docs Update"
+    ):
         return
 
     if pullrequest["title"].startswith("Release of"):
