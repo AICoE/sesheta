@@ -42,13 +42,13 @@ THOTH_DEVOPS_SPACE = "spaces/AAAAmQJAdY0"  # FIXME HARDCODED
 
 # pragma: no cover
 GITHUB_GOOGLE_CHAT_MAPPING = {
-    "goern": "@Christoph Goern",
-    "fridex": "@Frido Pokorny",
-    "ace2107": "@Akash Parekh",
-    "durandom": "@Marcel Hild",
-    "sub-mod": "@Subin Modeel",
-    "CermakM": "@Marek Cermak",
-    "vpavlin": "@Vaclav Pavlin",
+    "goern": "Christoph Goern",
+    "fridex": "Frido Pokorny",
+    "ace2107": "Akash Parekh",
+    "durandom": "Marcel Hild",
+    "sub-mod": "Subin Modeel",
+    "CermakM": "Marek Cermak",
+    "vpavlin": "Vaclav Pavlin",
 }
 
 # pragma: no cover
@@ -166,22 +166,6 @@ def create_pull_request_response(message: str, url: str) -> dict:
 
     widgets.append({"textParagraph": {"text": message}})
     widgets.append({"buttons": [{"textButton": {"text": "open this PR", "onClick": {"openLink": {"url": url}}}}]})
-    widgets.append(
-        {
-            "buttons": [
-                {
-                    "textButton": {
-                        "text": "list all open PR",
-                        "onClick": {
-                            "openLink": {
-                                "url": "https://github.com/pulls?q=is%3Aopen+is%3Apr+archived%3Afalse+user%3Athoth-station"  # Ignore PycodestyleBear (E501)
-                            }
-                        },
-                    }
-                }
-            ]
-        }
-    )
 
     cards.append({"sections": [{"widgets": widgets}]})
 
