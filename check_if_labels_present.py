@@ -42,13 +42,14 @@ else:
 logger.info(f"Version v{sesheta.__version__}")
 
 
+# TODO use click to provide the config file name
 if __name__ == "__main__":
     if not SESHETA_GITHUB_ACCESS_TOKEN:
         logger.error("Github Token not provided via environment variable SESHETA_GITHUB_ACCESS_TOKEN")
         exit(-1)
 
     github, org, GITHUB_ORGANIZATION, GITHUB_REPOSITORIES, DEFAULT_LABELS = init_github_interface(
-        SESHETA_GITHUB_ACCESS_TOKEN
+        SESHETA_GITHUB_ACCESS_TOKEN, "config-aicoe.json"
     )
 
     logger.info(f"Hi, I'm {github.get_user().name}, and I'm fully operational now!")

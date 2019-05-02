@@ -39,10 +39,6 @@ def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
             pullrequest["html_url"],
         )
     elif review["state"] == "approved":
-        # right now we dont want to see this notification, just add the label...
-        #        notify_channel(
-        #            f":white_check_mark: _{mattermost_username_by_github_user(review['user']['login'])}_ approved"
-        #            f" Pull Request '[{pullrequest['title']}]({pullrequest['html_url']})'")
         add_labels(pullrequest["_links"]["issue"]["href"], ["approved"])
 
 
@@ -51,7 +47,8 @@ def process_github_pull_request_review_requested(pullrequest: dict) -> None:
     for requested_reviewer in pullrequest["requested_reviewers"]:
         notify_channel(
             "new_pull_request_review",
-            f"👉 a review by {google_chat_username_by_github_user(requested_reviewer['login'])}"
+            f":magnifiying glass tilted right: a review by "
+            f"{google_chat_username_by_github_user(requested_reviewer['login'])}"
             f" has been requested for "
             f"Pull Request '{pullrequest['title']}'",
             pullrequest["html_url"],
