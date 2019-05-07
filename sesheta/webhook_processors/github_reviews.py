@@ -47,7 +47,7 @@ def process_github_pull_request_review_requested(pullrequest: dict) -> None:
     for requested_reviewer in pullrequest["requested_reviewers"]:
         notify_channel(
             "new_pull_request_review",
-            f":magnifiying glass tilted right: a review by "
+            f"🔎 a review by "
             f"{google_chat_username_by_github_user(requested_reviewer['login'])}"
             f" has been requested for "
             f"Pull Request '{pullrequest['title']}'",
