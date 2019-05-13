@@ -242,7 +242,7 @@ def handle_github_webhook():  # pragma: no cover
     signature = request.headers.get("X-Hub-Signature")
     sha, signature = signature.split("=")
 
-    secret = str.encode(current_app.config.get("SESHETA_GITHUB_WEBHOOK_SECRET"))
+    secret = str.encode(_SESHETA_GITHUB_ACCESS_TOKEN)
 
     hashhex = hmac.new(secret, request.data, digestmod="sha1").hexdigest()
 
