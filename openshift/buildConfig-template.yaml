@@ -62,7 +62,7 @@ parameters:
     displayName: Thoth sesheta git repository
     required: true
     name: GITHUB_URL
-    value: 'https://github.com/thoth-station/sesheta'
+    value: 'https://github.com/AICoE/sesheta'
 
   - description: Git reference for Thoth's sesheta
     displayName: Thoth sesheta git reference
