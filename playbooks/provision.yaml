@@ -7,26 +7,124 @@
     - sesheta
 
   hosts: localhost
-
   gather_facts: false
   connection: local
 
+  vars:
+    OCP_TOKEN: "{{ lookup('env','OCP_TOKEN') }}"
+    OCP_URL: "{{ lookup('env','OCP_URL') }}"
+    SESHETA_CONFIG_FILE: "{{ lookup('env', 'SESHETA_CONFIG_FILE') }}"
+
   tasks:
-    - name: "check if required Secret 'sesheta-secret' exists"
-      command: "oc get secret --namespace {{ SESHETA_APPLICATION_NAMESPACE }} sesheta-secret"
+    - name: "Login to OpenShift using provided token"
+      changed_when: false
+      shell: >
+        oc login {{ OCP_URL }} --insecure-skip-tls-verify=true
+        --token {{ OCP_TOKEN }}
+
+    - name: "Make sure to use project {{ SESHETA_APPLICATION_NAMESPACE }}"
+      command: "oc project {{ SESHETA_APPLICATION_NAMESPACE }}"
+      ignore_errors: true
+      register: project_exists
+
+    - name: check if required Secret 'sesheta-secret' exists
+      shell: >
+        oc get secret --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta-secret
       register: secret_exists
       ignore_errors: true
 
     - name: create Secret with SSH Key and Access Token for GitHub
-      command: oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }}" generic sesheta-secret \
-        --from-file=ssh-privatekey="{{ SESHETA_SSH_PRIVATE_KEY_PATH }}" \
-        --from-literal=github-oauth-token="{{ SESHETA_GITHUB_OAUTH_TOKEN }}" \
-        --type=kubernetes.io/ssh-auth \
-        --from-literal=github-webhook-secret="{{ SESHETA_GITHUB_WEBHOOK_SECRET }}" \
-        --from-literal=mattermost-endpoint-url="{{ SESHETA_MATTERMOST_ENDPOINT_URL }}" \
+      shell: >
+        oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }}"
+        generic sesheta-secret
+        --from-file=ssh-privatekey="{{ SESHETA_SSH_PRIVATE_KEY_PATH }}"
+        --from-literal=github-oauth-token="{{ SESHETA_GITHUB_OAUTH_TOKEN }}"
+        --from-literal=github-webhook-secret="{{ SESHETA_GITHUB_WEBHOOK_SECRET }}"
         --from-literal=google-chat-endpoint-url="{{ SESHETA_GOOGLE_CHAT_ENDPOINT_URL }}"
+        --type=kubernetes.io/ssh-auth
       when: secret_exists is failed
 
-    - name: "crete Secret for oauth2client.service_account.ServiceAccountCredentials.from_json_keyfile_name"
-      command: oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }} generic sesheta-pubsub-consumer \
-        --from-file=sesheta-chatbot-968e13a86991.json
+    - name: check if required Secret 'sesheta-pubsub-consumer' exists
+      shell: >
+        oc get secret --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta-pubsub-consumer
+      register: sesheta_pubsub_consumer_exists
+      ignore_errors: true
+
+    - name: crete Secret for oauth2client.sa.ServiceAccountCredentials.from_json_keyfile_name
+      shell: >
+        oc create secret --namespace "{{ SESHETA_APPLICATION_NAMESPACE }}"
+        generic sesheta-pubsub-consumer
+        --from-file=../sesheta-chatbot-968e13a86991.json
+      when: sesheta_pubsub_consumer_exists is failed
+
+    - name: check if required configmap 'sesheta-bot' exists
+      shell: >
+        oc get configmap --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta-bot
+      register: sesheta_bot_exists
+      ignore_errors: true
+
+    - name: create configmap for sesheta bot config.json
+      shell: >
+        oc create configmap sesheta-bot
+        --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --from-file=sesheta-bot-config-json="{{ SESHETA_CONFIG_FILE }}"
+      when: sesheta_bot_exists is failed
+
+    - name: check if required configmap 'sesheta-configmap' exists
+      shell: >
+        oc get configmap --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta-configmap
+      register: sesheta_configmap_exists
+      ignore_errors: true
+
+    - name: create configmap for sesheta scrum bot
+      shell: >
+        oc process --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --filename=../openshift/configMap-template.yaml
+        -p SESHETA_SCRUM_SPACE="{{ SESHETA_SCRUM_SPACE }}"
+        -p SESHETA_SCRUM_URL="{{ SESHETA_SCRUM_URL }}"
+        | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
+      when: sesheta_configmap_exists
+
+    - name: check if ImageStream exists
+      shell: >
+        oc get imagestream --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta
+      register: imagestream_exists
+      ignore_errors: true
+
+    - name: create sesheta imagestream
+      shell: >
+        oc process --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --filename=../openshift/imageStream-template.yaml
+        | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
+      when: imagestream_exists is failed
+
+    - name: check if BuildConfig exists
+      shell: >
+        oc get buildconfig --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        sesheta
+      register: buildconfig_exists
+      ignore_errors: true
+
+    - name: create sesheta BuildConfig
+      shell: >
+        oc process --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --filename=../openshift/buildConfig-template.yaml
+        | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
+      when: buildconfig_exists is failed
+
+    - name: create sesheta bots CronJob
+      shell: >
+        oc process --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --filename ../openshift/cronJob-template.yaml
+        | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
+
+    - name: create sesheta bots deployment, service and route
+      shell: >
+        oc process --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        --filename ../openshift/deployment-template.yaml
+        | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
