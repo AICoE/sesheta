@@ -1,0 +1,41 @@
+---
+- name: Playbook to deprovision Thoth's Sesheta Webhook Bot
+  tags:
+    - openshift
+    - thoth
+    - bot
+    - sesheta
+
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  vars:
+    OCP_TOKEN: "{{ lookup('env','OCP_TOKEN') }}"
+    OCP_URL: "{{ lookup('env','OCP_URL') }}"
+
+  tasks:
+    - name: "Login to OpenShift using provided token"
+      changed_when: false
+      shell: >
+        oc login {{ OCP_URL }} --insecure-skip-tls-verify=true
+        --token {{ OCP_TOKEN }}
+
+    - name: "Make sure to use project {{ SESHETA_APPLICATION_NAMESPACE }}"
+      command: "oc project {{ SESHETA_APPLICATION_NAMESPACE }}"
+      ignore_errors: true
+      register: project_exists
+
+    - name: "Deprovision sesheta"
+      shell: >
+        oc --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+        delete all --selector 'app=sesheta'
+
+    - name: "Deprovision sesheta configmap/secrets"
+      shell: >
+        oc delete {{ item }} --namespace {{ SESHETA_APPLICATION_NAMESPACE }}
+      with_items:
+        - secret/sesheta-pubsub-consumer
+        - secret/sesheta-secret
+        - configmap/sesheta-bot
+        - configmap/sesheta-configmap

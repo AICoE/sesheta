@@ -30,28 +30,39 @@ To deploy sesheta on an OpenShift cluster use the following Ansible command with
 
 ```shell
   ansible-playbook \
-    --extra-vars=SESHETA_INFRA_NAMESPACE=<openshift_cluster_namespace> \
+    --extra-vars=OCP_URL=<openshift_cluster_url> \
+    --extra-vars=OCP_TOKEN=<openshift_cluster_token> \
+    --extra-vars=SESHETA_CONFIG_FILE=<config_json> \
+    --extra-vars=SESHETA_SCRUM_SPACE=<google-chat-space> \
+    --extra-vars=SESHETA_SCRUM_URL=<scurm_meeting_url> \
     --extra-vars=SESHETA_APPLICATION_NAMESPACE=<openshift_cluster_namespace> \
-    --extra-vars=SESHETA_TOKEN=<github_oauth_token> \
+    --extra-vars=SESHETA_GITHUB_OAUTH_TOKEN=<github_oauth_token> \
     --extra-vars=SESHETA_SSH_PRIVATE_KEY_PATH=<github_ssh_private_key_path> \
     --extra-vars=SESHETA_GITHUB_WEBHOOK_SECRET=<github_webhook_secret> \
-    --extra-vars=SESHETA_MATTERMOST_ENDPOINT_URL=<mattermost_incoming_webhook_url> \
+    --extra-vars=SESHETA_GOOGLE_CHAT_ENDPOINT_URL=<google_chat_incoming_webhook_url> \
     playbooks/provision.yaml
 ```
 
-- `KEBECHET_SSH_PRIVATE_KEY_PATH`: The path where the GitHub ssh private key is stored should be provided. (Example: $HOME/.ssh/id_rsa). If the field is undefined then the script will create the ssh keys for you and then you can set up the given public key to GitHub repository.
 
-- `KEBECHET_TOKEN`: To raise a pull request bot requires user rights and premissions. The GitHub OAuth tokens are to be set for raising pull request whenever updates are encounter by the Kebechet.
+- `OCP_URL`: The OpenShift cluster host url for establishing connection.
 
-- `KEBECHET_CONFIGURATION_PATH`: Path to the YAML configuration file to be used for Kebechet to check for dependency updates.
+- `OCP_TOKEN`: The OpenShift user token for login into the cluster.
 
-- `KEBECHET_INFRA_NAMESPACE`: The OpenShift namespace can be used for the infrastructural purposes, all the images stream are stored in the `KEBECHET_INFRA_NAMESPACE`.
+- `SESHETA_CONFIG_FILE`: **SESHETA_CONFIG_FILE** contain configuration json to be provided to sesheta.(Example: '$HOME/AICoE/sesheta/config.json'). configuration file for thoth-station and aicoe is present in the repo and it contains list of repos are to be watched by sesheta. Refer [AICoE Config](config-aicoe.json) and [thoth-station config](config.json)
 
-- `KEBECHET_APPLICATION_NAMESPACE`: The OpenShift namespace can be used for the application purposes, all the templates, builds, secrets, configmap and jobs are stored in the `KEBECHET_APPLICATION_NAMESPACE`.
+- `SESHETA_SCRUM_SPACE`: Google Chat Room Space, please refer google chat api documentation to get your room space (Example: spaces/abcd)
+
+- `SESHETA_SCRUM_URL`: URL for the space where scrum call would be held. (Example: bluejeans room url)
+
+- `SESHETA_APPLICATION_NAMESPACE`: The OpenShift namespace can be used for the application purposes, all the templates, builds, secrets, configmap and jobs are stored in the `SESHETA_APPLICATION_NAMESPACE`.
+
+- `SESHETA_GITHUB_OAUTH_TOKEN`: To raise a pull request bot requires user rights and premissions. The GitHub OAuth tokens are to be set for raising pull request whenever updates are encounter by the Sesheta.
+
+- `SESHETA_SSH_PRIVATE_KEY_PATH`: The path where the GitHub ssh private key is stored should be provided. (Example: $HOME/.ssh/id_rsa). If the field is undefined then the script will create the ssh keys for you and then you can set up the given public key to GitHub repository.
 
 - `SESHETA_GITHUB_WEBHOOK_SECRET`: Secret used to secure each webhook send by GitHub.
 
-- `SESHETA_MATTERMOST_ENDPOINT_URL`: The incoming webhook URL of Mattermost.
+- `SESHETA_GOOGLE_CHAT_ENDPOINT_URL`: The incoming webhook URL of Google Chat.To Enable Sesheta to send scrum call reminder.
 
 ## Copyright
 
