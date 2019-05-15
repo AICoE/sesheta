@@ -80,7 +80,7 @@ if __name__ == "__main__":
                 continue
 
             if pr.mergeable and ("needs-rebase" in labels):
-                logger.info(f"'{pr.title}' is mergeable, removieng 'needs-rebase' label")
+                logger.info(f"'{pr.title}' is mergeable, removing 'needs-rebase' label")
 
                 pr.as_issue().remove_from_labels("needs-rebase")
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
                     maybe_approve = True
 
             if maybe_approve:
-                logger.info(f"I are going to approve Pull Request '{pr.title}'")
+                logger.info(f"I am going to approve Pull Request '{pr.title}'")
                 pr.as_issue().add_to_labels("approved")
 
             else:
