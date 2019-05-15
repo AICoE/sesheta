@@ -33,7 +33,7 @@ _LOGGER = daiquiri.getLogger(__name__)
 
 
 CICD_CONTEXT_ID = "continuous-integration/jenkins/pr-merge"
-DO_NOT_MERGE_LABELS = ["do-not-merge", "work-in-progress", "do-not-merge/work-in-progress" "do-not-merge/hold"]
+DO_NOT_MERGE_LABELS = ["do-not-merge", "work-in-progress", "do-not-merge/work-in-progress", "do-not-merge/hold"]
 
 
 def init_github_interface(
@@ -92,3 +92,19 @@ def get_labels(pr) -> list:  # pragma: no cover
         _LOGGER.error(e)
 
     return labels
+
+
+def commit_was_successful_tested(commit, statuses):
+    """Ensure CI test on commit was successful."""
+    latest_status_id = 0
+    rc = False
+
+    for status in statuses:
+        if status.context == CICD_CONTEXT_ID:
+            _LOGGER.debug(f"{commit} {status}")
+
+            if latest_status_id < status.id:
+                if status.state == "success":
+                    rc = True
+
+    return rc
