@@ -36,7 +36,7 @@ __author__ = "Christoph Görn <goern@redhat.com>"
 def create_application():
     """Create, configure and return the Flask application."""
     app = Flask(__name__)
-    app.config["SESHETA_GITHUB_WEBHOOK_SECRET"] = os.environ.get("KEBECHET_GITHUB_WEBHOOK_SECRET")
+    app.config["SESHETA_GITHUB_WEBHOOK_SECRET"] = os.environ.get("SESHETA_GITHUB_WEBHOOK_SECRET")
     app.register_blueprint(webhooks)
     app.register_blueprint(metrics)
     app.register_blueprint(probes)
