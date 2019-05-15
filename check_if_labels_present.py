@@ -49,7 +49,7 @@ if __name__ == "__main__":
         exit(-1)
 
     github, org, GITHUB_ORGANIZATION, GITHUB_REPOSITORIES, DEFAULT_LABELS = init_github_interface(
-        SESHETA_GITHUB_ACCESS_TOKEN, "config-aicoe.json"
+        SESHETA_GITHUB_ACCESS_TOKEN, "etc/config.json"
     )
 
     logger.info(f"Hi, I'm {github.get_user().name}, and I'm fully operational now!")

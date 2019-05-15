@@ -79,16 +79,16 @@ objects:
                     secretKeyRef:
                       name: sesheta-secret
                       key: github-webhook-secret
-                - name: SESHETA_MATTERMOST_ENDPOINT_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: sesheta-secret
-                      key: mattermost-endpoint-url
                 - name: SESHETA_GOOGLE_CHAT_ENDPOINT_URL
                   valueFrom:
                     secretKeyRef:
                       name: sesheta-secret
                       key: google-chat-endpoint-url
+                - name: SESHETA_GITHUB_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: github-oauth-token
+                      name: sesheta-secret
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -99,6 +99,17 @@ objects:
                 limits:
                   memory: "256Mi"
                   cpu: "500m"
+              volumeMounts:
+                - name: sesheta-pubsub-consumer
+                  mountPath: /opt/app-root/etc/gcloud
+                  readOnly: true
+          volumes:
+            - name: sesheta-pubsub-consumer
+              secret:
+                secretName: sesheta-pubsub-consumer
+                items:
+                  - key: sesheta-chatbot-968e13a86991.json
+                    path: sesheta-chatbot-968e13a86991.json
       test: false
       triggers:
         - type: ConfigChange
