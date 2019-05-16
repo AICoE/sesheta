@@ -32,7 +32,7 @@ daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
 
 
-CICD_CONTEXT_ID = "continuous-integration/jenkins/pr-merge"
+CICD_CONTEXT_ID = "local/check"
 DO_NOT_MERGE_LABELS = ["do-not-merge", "work-in-progress", "do-not-merge/work-in-progress", "do-not-merge/hold"]
 
 

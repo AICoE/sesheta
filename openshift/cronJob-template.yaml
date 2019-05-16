@@ -141,7 +141,7 @@ objects:
         app: sesheta
         component: approver
     spec:
-      schedule: '*/60 * * * *'
+      schedule: '*/10 * * * *'
       suspend: false
       concurrencyPolicy: Forbid
       successfulJobsHistoryLimit: 2
