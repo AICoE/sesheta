@@ -48,6 +48,7 @@ _LOGGER = daiquiri.getLogger(__name__)
 _RELATED_REGEXP = r"\w+:\ \#([0-9]+)"
 _DRY_RUN = os.environ.get("SESHETA_DRY_RUN", False)
 _SESHETA_GITHUB_ACCESS_TOKEN = os.getenv("SESHETA_GITHUB_ACCESS_TOKEN", None)
+_SESHETA_GITHUB_WEBHOOK_SECRET = os.getenv("SESHETA_GITHUB_WEBHOOK_SECRET", None)
 _GIT_API_REQUEST_HEADERS = {"Authorization": "token %s" % _SESHETA_GITHUB_ACCESS_TOKEN}
 
 
@@ -242,7 +243,7 @@ def handle_github_webhook():  # pragma: no cover
     signature = request.headers.get("X-Hub-Signature")
     sha, signature = signature.split("=")
 
-    secret = str.encode(_SESHETA_GITHUB_ACCESS_TOKEN)
+    secret = str.encode(_SESHETA_GITHUB_WEBHOOK_SECRET)
 
     hashhex = hmac.new(secret, request.data, digestmod="sha1").hexdigest()
 
