@@ -58,4 +58,5 @@ def process_github_pull_request_review_requested(pullrequest: dict) -> None:
 def process_github_pull_request_review_submitted(pullrequest: dict, review: dict) -> None:
     """Will handle with care."""
     if review["state"].startswith("approved"):
-        _LOGGER.info("TODO set label 'approved' for {pullrequest['html_url']}")
+        _LOGGER.info("Set label 'approved' for {pullrequest['html_url']}")
+        add_labels(pullrequest["_links"]["issue"]["href"], ["approved"])
