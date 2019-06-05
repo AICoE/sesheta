@@ -26,7 +26,6 @@ import requests
 
 from httplib2 import Http
 from apiclient.discovery import build, build_from_document
-from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 
 from thoth.common import init_logging
@@ -44,7 +43,7 @@ class HTTPError(Exception):
     pass
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 
 DEBUG = bool(os.getenv("DEBUG", True))
@@ -52,6 +51,8 @@ DEBUG = bool(os.getenv("DEBUG", True))
 SPACE = os.getenv("SESHETA_SCRUM_SPACE", None)
 SESHETA_SCRUM_MESSAGE = os.getenv("SESHETA_SCRUM_MESSAGE", None)
 SESHETA_SCRUM_URL = os.getenv("SESHETA_SCRUM_URL", None)
+THREAD_KEY = os.getenv("SCRUM_THREAD_KEY", None)
+USER_EXCEPTION = ["Daniel Riek", "Steven Huels"]
 
 init_logging()
 _LOGGER = logging.getLogger("thoth.bots.sesehta.scrum_standup")
@@ -78,23 +79,30 @@ if __name__ == "__main__":
     cards = list()
     widgets = list()
     header = None
-
-    widgets.append({"textParagraph": {"text": SESHETA_SCRUM_MESSAGE}})
-    widgets.append(
-        {"buttons": [{"textButton": {"text": "open bluejeans", "onClick": {"openLink": {"url": SESHETA_SCRUM_URL}}}}]}
-    )
-
-    cards.append({"sections": [{"widgets": widgets}]})
-
-    response["cards"] = cards
-    response["name"] = f"scrum_standup"
+    scrum_text = "Ready? "
 
     scopes = ["https://www.googleapis.com/auth/chat.bot"]
     credentials = ServiceAccountCredentials.from_json_keyfile_name("etc/credentials.json", scopes)
     http_auth = credentials.authorize(Http())
 
     chat = build("chat", "v1", http=http_auth)
-    response = chat.spaces().messages().create(parent=SPACE, body=response)
+
+    memberships = chat.spaces().members().list(parent=SPACE)
+    result = memberships.execute()
+    for member in result["memberships"]:
+        if member["member"].get("displayName") not in USER_EXCEPTION:
+            scrum_text += " <" + member["member"].get("name") + ">"
+    widgets.append({"textParagraph": {"text": SESHETA_SCRUM_MESSAGE}})
+    widgets.append(
+        {"buttons": [{"textButton": {"text": "open bluejeans", "onClick": {"openLink": {"url": SESHETA_SCRUM_URL}}}}]}
+    )
+
+    cards.append({"sections": [{"widgets": widgets}]})
+    response["text"] = scrum_text
+    response["cards"] = cards
+    response["name"] = f"scrum_standup"
+
+    response = chat.spaces().messages().create(parent=SPACE, body=response, threadKey=THREAD_KEY)
 
     if response is not None:
         response.execute()
