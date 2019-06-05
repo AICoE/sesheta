@@ -25,22 +25,26 @@ parameters:
     name: SESHETA_VERBOSE
     value: "1"
 
-  - description: Sesheta .
-    displayName: Sesheta
+  - description: Google chat room space.
+    displayName: SESHETA_SCRUM_SPACE
     required: true
     name: SESHETA_SCRUM_SPACE
 
-  - description: Sesheta .
-    displayName: Sesheta
+  - description: scrum message for the thread.
+    displayName: SESHETA_SCRUM_MESSAGE
     required: true
     name: SESHETA_SCRUM_MESSAGE
     value: "☎️ the scrum is due in one minute..."
 
-  - description: Sesheta .
-    displayName: Sesheta
+  - description: Bluejeans scrum url.
+    displayName: SESHETA_SCRUM_URL
     required: true
     name: SESHETA_SCRUM_URL
 
+  - description: Scrum google chat threadKey.
+    displayName: SCRUM_THREAD_KEY
+    required: true
+    name: SCRUM_THREAD_KEY
 
 objects:
   - apiVersion: v1
@@ -54,3 +58,4 @@ objects:
       scrum-space: ${SESHETA_SCRUM_SPACE}
       scrum-message: ${SESHETA_SCRUM_MESSAGE}
       scrum-url: ${SESHETA_SCRUM_URL}
+      scrum-threadkey: ${SCRUM_THREAD_KEY}
