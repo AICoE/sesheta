@@ -281,3 +281,26 @@ def handle_github_webhook():  # pragma: no cover
         _LOGGER.error(f"Webhook secret mismatch: me: {hashhex} != them: {signature}")
 
     return jsonify({"message": "thanks!"}), 200
+
+
+@webhooks.route("/prometheus", methods=["POST"])
+def handle_prometheus_alert_webhook():  # pragma: no cover
+    """Entry point for prometheus alert webhook."""
+    payload = request.json
+    try:
+        url = payload["alerts"][0]["generatorURL"]
+    except KeyError as exc:
+        _LOGGER.exception(exc)
+        url = payload["externalURL"]
+
+    notify_channel(
+        "prometheus_alert",
+        f'🔎 <font color="#ff0000">Prometheus Alert 🚨</font>: \n'
+        f"<b>'{payload['commonLabels']['alertname']}'</b>"
+        f" in instance <b>'{payload['commonLabels']['instance']}'</b>.\n"
+        f"Job: <b>'{payload['commonLabels']['job']}'</b> \n"
+        f"Severity: <font color=\"#ff0000\">'{payload['commonAnnotations']['severity']}'</font>\n",
+        url,
+    )
+
+    return jsonify({"message": "thanks!"}), 200

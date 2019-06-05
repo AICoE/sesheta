@@ -135,6 +135,10 @@ def notify_channel(kind: str, message: str, url: str) -> None:
         response = chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body=create_issue_response(message, url))
     elif kind.upper() == "MERGED_PULL_REQUEST":
         response = chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body={"text": message})
+    elif kind.upper() == "PROMETHEUS_ALERT":
+        response = (
+            chat.spaces().messages().create(parent=THOTH_DEVOPS_SPACE, body=create_prometheus_alert(message, url))
+        )
 
     if response is not None:
         response.execute()
@@ -173,6 +177,20 @@ def create_pull_request_response(message: str, url: str) -> dict:
     id = url.split("/")[-1]
     response["name"] = f"pull_request-{id}"
 
+    return response
+
+
+def create_prometheus_alert(message: str, url: str) -> dict:
+    """Create a Google Hangouts Chat Card for prometheus alert."""
+    response = dict()
+    cards = list()
+    widgets = list()
+
+    widgets.append({"textParagraph": {"text": message}})
+    widgets.append({"buttons": [{"textButton": {"text": "open the Alert", "onClick": {"openLink": {"url": url}}}}]})
+    cards.append({"sections": [{"widgets": widgets}]})
+    response["cards"] = cards
+    response["name"] = f"prometheus_alert"
     return response
 
 
