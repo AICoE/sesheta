@@ -18,6 +18,7 @@
         "common",
         "core",
         "cve-update-job",
+        "digests-fetcher",
         "dgraph-thoth-config",
         "external-janusgraph-service",
         "goblinoid",
