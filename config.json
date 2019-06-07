@@ -27,6 +27,7 @@
         "graph-sync-scheduler",
         "httpd-aicoe-container",
         "init-job",
+	"invectio",
         "isis-api",
         "janusgraph-thoth-config",
         "jupyter-notebook",
