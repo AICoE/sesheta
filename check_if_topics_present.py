@@ -49,27 +49,28 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
 _QUERY = """
-query GetRepositoriesAndTopics{
-    organization(login:"aicoe") {
-    repositories(first: 100) {
-        edges {
-                node {
+query GetRepositoriesAndTopics {{
+    organization(login:"{org_name}") {{
+    name
+    repositories(first: 100) {{
+        edges {{
+                node {{
                     id
                     name
-                    repositoryTopics(first: 100){
-                        edges {
-                            node {
-                                topic {
+                    repositoryTopics(first: 100) {{
+                        edges {{
+                            node {{
+                                topic {{
                                     name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
+    }}
+}}
 """
 
 _MUTATION_TEMPLATE = """
@@ -98,7 +99,7 @@ class GraphQLClient:
     def request(self, query):
         """Do a GraphQL request."""
         if not self.token:
-            raise RuntimeError("Please set an environment variable SESHETA_GITHUB_SRCOPS_ACCESS_TOKEN.\n")
+            raise RuntimeError("Please set an environment variable SESHETA_GITHUB_ACCESS_TOKEN.\n")
 
         logger.debug(f"session = {self.session.headers}")
         logger.debug(f"query = {query}")
@@ -119,11 +120,16 @@ if __name__ == "__main__":
 
     G = GraphQLClient(GITHUB_ACCESS_TOKEN)
 
-    repos = G.request(_QUERY).json()["data"]
+    try:
+        repos = G.request(_QUERY.format(org_name="thoth-station")).json()["data"]
+    except Exception as exp:
+        logger.error(exp)
+        exit(-1)
+
     logger.debug(repos)
 
     if "errors" in repos:
-        raise RuntimeError("There was something wront with the repos query")
+        raise RuntimeError("There was something wrong with the repos query")
 
     for repo in repos["organization"]["repositories"]["edges"]:
         repo_id = repo["node"]["id"]
@@ -137,7 +143,9 @@ if __name__ == "__main__":
             repo_topics.add(topic["node"]["topic"]["name"])
 
         repo_topics.add("artificial-intelligence")
-        # repo_topics.add("thoth")
+
+        if "Thoth Station" in repos["organization"]["name"]:
+            repo_topics.add("thoth")
 
         if "sesheta" in repo_name:
             repo_topics.add("thoth")
@@ -167,5 +175,5 @@ if __name__ == "__main__":
         mutation = G.request(
             _MUTATION_TEMPLATE.format(repository_id=repo_id, topic_names=json.dumps(list(repo_topics)), id="1")
         )
-
         logger.debug(mutation.json())
+
