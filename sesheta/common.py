@@ -74,7 +74,11 @@ def ensure_label_present(repo, name, color, current_labels, description=""):  # 
         except UnknownObjectException as e:
             _LOGGER.error(e)
 
-            repo.create_issue(f"can't create '{name}' label")
+            repo.create_issue(
+                f"can't create '{name}' label",
+                body=f"Please provide permission to the sourceops team with write access to this repository.",
+                labels=["bug"],
+            )
             _LOGGER.info("issue created!")
     else:
         _LOGGER.debug(f"label '{name}' was present")
