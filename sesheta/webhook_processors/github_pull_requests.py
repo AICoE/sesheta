@@ -65,7 +65,7 @@ def process_github_pull_request_labeled(pullrequest: dict) -> None:
     for label in pullrequest["labels"]:
         if label["name"] == "needs-rebase":
             notify_channel(
-                "rebase_pull_request"
+                "rebase_pull_request",
                 f"{google_chat_username_by_github_user(pullrequest['user']['login'])} please have a look "
                 f"at pull request: '{pullrequest['title']}' it needs to be rebased.",
                 pullrequest["html_url"],

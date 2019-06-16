@@ -176,4 +176,3 @@ if __name__ == "__main__":
             _MUTATION_TEMPLATE.format(repository_id=repo_id, topic_names=json.dumps(list(repo_topics)), id="1")
         )
         logger.debug(mutation.json())
-
