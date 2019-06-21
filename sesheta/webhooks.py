@@ -222,22 +222,27 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
     return
 
 
-def _add_size_label(pullrequest: dict) -> None:  # pragma: no cover
-    """Add a size label to a GitHub Pull Request."""
+def _add_required_labels(pullrequest: dict) -> None:  # pragma: no cover
+    """Add the required label to a GitHub Pull Request."""
     if pullrequest["title"].startswith("Automatic update of dependency"):
         return
 
     if pullrequest["state"] == "closed":
         return
 
-    sizeLabel = calculate_pullrequest_size(pullrequest)
+    if pullrequest["title"].startswith("WIP") or pullrequest["title"].startswith("[WIP]"):
+        _LOGGER.debug(f"{pullrequest['title']} is not mergeable, it's work-in-progress!")
+        add_labels(pullrequest["_links"]["issue"]["href"], ["do-not-merge/work-in-progress"])
 
+    sizeLabel = calculate_pullrequest_size(pullrequest)
     _LOGGER.debug(f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
 
     if sizeLabel:
         # TODO check if there is a size label, if it is the same: skip
         # otherwise update
         set_size(pullrequest["_links"]["issue"]["href"], sizeLabel)
+
+    return
 
 
 @webhooks.route("/github", methods=["POST"])
@@ -267,7 +272,7 @@ def handle_github_webhook():  # pragma: no cover
         _LOGGER.debug(f"Received a webhook: event: {event}, action: {action}.")
 
         if event == "pull_request":
-            _add_size_label(payload["pull_request"])
+            _add_required_labels(payload["pull_request"])
 
             if action == "opened":
                 process_github_open_pullrequest(payload["pull_request"])
