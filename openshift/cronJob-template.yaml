@@ -110,6 +110,11 @@ objects:
                         configMapKeyRef:
                           key: scrum-url
                           name: sesheta-configmap
+                    - name: USERS_INVITED
+                      valueFrom:
+                        configMapKeyRef:
+                          key: users-invited
+                          name: sesheta-configmap
                   resources:
                     limits:
                       cpu: 250m
