@@ -46,6 +46,11 @@ parameters:
     required: true
     name: SCRUM_THREAD_KEY
 
+  - description: Users Inivited for the Scrum stand call.
+    displayName: USERS_INVITED
+    required: true
+    name: USERS_INVITED
+
 objects:
   - apiVersion: v1
     kind: ConfigMap
@@ -59,3 +64,4 @@ objects:
       scrum-message: ${SESHETA_SCRUM_MESSAGE}
       scrum-url: ${SESHETA_SCRUM_URL}
       scrum-threadkey: ${SCRUM_THREAD_KEY}
+      users-invited: ${USERS_INVITED}

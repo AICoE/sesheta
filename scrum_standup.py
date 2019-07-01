@@ -27,7 +27,7 @@ import requests
 from httplib2 import Http
 from apiclient.discovery import build, build_from_document
 from oauth2client.service_account import ServiceAccountCredentials
-
+from datetime import datetime
 from thoth.common import init_logging
 
 
@@ -51,8 +51,16 @@ DEBUG = bool(os.getenv("DEBUG", True))
 SPACE = os.getenv("SESHETA_SCRUM_SPACE", None)
 SESHETA_SCRUM_MESSAGE = os.getenv("SESHETA_SCRUM_MESSAGE", None)
 SESHETA_SCRUM_URL = os.getenv("SESHETA_SCRUM_URL", None)
-THREAD_KEY = os.getenv("SCRUM_THREAD_KEY", None)
-USER_EXCEPTION = ["Daniel Riek", "Steven Huels"]
+USERS_INVITED = os.getenv("USERS_INVITED", [])
+MESSAGE_MAP = {
+    0: "Happy Monday Fellas, 🤠",
+    1: "Tell us Something Tuesday, 🤓",
+    2: "Word Hard Wedneday, 😎",
+    3: "Have Fun at work on Thrusday, 🤓",
+    4: "Feel Good Friday, 😉",
+    5: "Enjoy Saturday, 🤣",
+    6: "Enjoy Sunday, 🤣",
+}
 
 init_logging()
 _LOGGER = logging.getLogger("thoth.bots.sesehta.scrum_standup")
@@ -79,7 +87,7 @@ if __name__ == "__main__":
     cards = list()
     widgets = list()
     header = None
-    scrum_text = "Ready? "
+    scrum_text = MESSAGE_MAP[datetime.today().weekday()]+"\n Ready for the Scrum ? "
 
     scopes = ["https://www.googleapis.com/auth/chat.bot"]
     credentials = ServiceAccountCredentials.from_json_keyfile_name("etc/credentials.json", scopes)
@@ -90,7 +98,7 @@ if __name__ == "__main__":
     memberships = chat.spaces().members().list(parent=SPACE)
     result = memberships.execute()
     for member in result["memberships"]:
-        if member["member"].get("displayName") not in USER_EXCEPTION:
+        if member["member"].get("displayName") in USERS_INVITED:
             scrum_text += " <" + member["member"].get("name") + ">"
     widgets.append({"textParagraph": {"text": SESHETA_SCRUM_MESSAGE}})
     widgets.append(
@@ -102,7 +110,7 @@ if __name__ == "__main__":
     response["cards"] = cards
     response["name"] = f"scrum_standup"
 
-    response = chat.spaces().messages().create(parent=SPACE, body=response, threadKey=THREAD_KEY)
+    response = chat.spaces().messages().create(parent=SPACE, body=response, threadKey="scrum_standup")
 
     if response is not None:
         response.execute()

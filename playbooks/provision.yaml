@@ -86,6 +86,7 @@
         --filename=../openshift/configMap-template.yaml
         -p SESHETA_SCRUM_SPACE="{{ SESHETA_SCRUM_SPACE }}"
         -p SESHETA_SCRUM_URL="{{ SESHETA_SCRUM_URL }}"
+        -p USERS_INVITED="{{ USERS_INVITED }}"
         | oc apply --namespace {{ SESHETA_APPLICATION_NAMESPACE }} -f -
       when: sesheta_configmap_exists
 
