@@ -55,7 +55,7 @@ USERS_INVITED = os.getenv("USERS_INVITED", [])
 MESSAGE_MAP = {
     0: "Happy Monday Fellas, 🤠",
     1: "Tell us Something Tuesday, 🤓",
-    2: "Word Hard Wedneday, 😎",
+    2: "Work Hard Wedneday, 😎",
     3: "Have Fun at work on Thrusday, 🤓",
     4: "Feel Good Friday, 😉",
     5: "Enjoy Saturday, 🤣",
