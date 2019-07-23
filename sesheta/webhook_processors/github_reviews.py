@@ -44,7 +44,9 @@ def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
 
 def process_github_pull_request_review_requested(pullrequest: dict) -> None:
     """Will handle with care."""
-    if pullrequest["title"].startswith("Automatic update of dependency"):
+    if pullrequest["title"].startswith("Automatic update of dependency") or pullrequest["title"].startswith(
+        "Release of"
+    ):
         return
 
     for requested_reviewer in pullrequest["requested_reviewers"]:
