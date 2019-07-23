@@ -12,7 +12,7 @@
         "ansible-role-core-templates",
         "ansible-role-cronjob",
         "ansible-role-metrics-exporter",
-        "build-analysers",
+        "build-analyzers",
         "build-watcher",
         "cleanup-job",
         "common",
