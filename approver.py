@@ -65,7 +65,12 @@ if __name__ == "__main__":
 
             labels = get_labels(pr)
 
-            if pr.title.startswith("WIP") or pr.title.startswith("[WIP]") or ("work-in-progress" in labels):
+            if (
+                pr.title.startswith("WIP")
+                or pr.title.startswith("[WIP]")
+                or ("work-in-progress" in labels)
+                or ("do-not-merge/work-in-progress" in labels)
+            ):
                 logger.info(f"'{pr.title}' is not mergeable, it's work-in-progress!")
 
                 if "work-in-progress" not in labels:
