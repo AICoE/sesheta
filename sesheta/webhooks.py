@@ -142,6 +142,9 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
     if pullrequest["title"].startswith("Automatic update of dependency"):
         return
 
+    if pullrequest["title"].startswith("Initial dependency lock"):
+        return
+
     # and we check if we should create a release...
     if pullrequest["title"].startswith("Release of"):
         if not eligible_release_pullrequest(pullrequest):
