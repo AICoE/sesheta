@@ -84,6 +84,11 @@ objects:
                     secretKeyRef:
                       name: sesheta-secret
                       key: google-chat-endpoint-url
+                - name: SESHETA_GOOGLE_CHAT_SPACE
+                  valueFrom:
+                    secretKeyRef:
+                      name: sesheta-secret
+                      key: google-chat-space
                 - name: SESHETA_GITHUB_ACCESS_TOKEN
                   valueFrom:
                     secretKeyRef:

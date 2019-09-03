@@ -38,7 +38,7 @@ _LOGGER = daiquiri.getLogger(__name__)
 
 DEBUG = bool(os.getenv("DEBUG", True))
 SESHETA_GITHUB_ACCESS_TOKEN = os.getenv("SESHETA_GITHUB_ACCESS_TOKEN", None)
-THOTH_DEVOPS_SPACE = "spaces/AAAAmQJAdY0"  # FIXME HARDCODED
+THOTH_DEVOPS_SPACE = os.getenv("SESHETA_GOOGLE_CHAT_SPACE", None)
 
 # pragma: no cover
 GITHUB_GOOGLE_CHAT_MAPPING = {

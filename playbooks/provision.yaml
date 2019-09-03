@@ -40,6 +40,7 @@
         generic sesheta-secret
         --from-file=ssh-privatekey="{{ SESHETA_SSH_PRIVATE_KEY_PATH }}"
         --from-literal=github-oauth-token="{{ SESHETA_GITHUB_OAUTH_TOKEN }}"
+        --from-literal=google-chat-space="{{ SESHETA_GOOGLE_CHAT_SPACE }}"
         --from-literal=github-webhook-secret="{{ SESHETA_GITHUB_WEBHOOK_SECRET }}"
         --from-literal=google-chat-endpoint-url="{{ SESHETA_GOOGLE_CHAT_ENDPOINT_URL }}"
         --type=kubernetes.io/ssh-auth
