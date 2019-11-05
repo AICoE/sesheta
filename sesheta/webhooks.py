@@ -269,15 +269,15 @@ def handle_github_webhook():  # pragma: no cover
         if event == "pull_request":
             _add_size_label(payload["pull_request"])
 
-            if action == "opened":
-                process_github_open_pullrequest(payload["pull_request"])
+            #if action == "opened":
+            #    process_github_open_pullrequest(payload["pull_request"])
             #elif action == "closed":
             #    if payload["pull_request"]["merged"]:
             #        handle_github_open_pullrequest_merged_successfully(payload["pull_request"])
             # This has been migrated to Sefkhet-Abwy
             # elif action == "review_requested":
             #    process_github_pull_request_review_requested(payload["pull_request"])
-            elif action == "labeled":
+            if action == "labeled":
                 process_github_pull_request_labeled(payload["pull_request"])
         elif event == "issues":
             if payload["action"] == "opened":
