@@ -31,14 +31,14 @@ _LOGGER = daiquiri.getLogger(__name__)
 
 def process_github_pull_request_review(pullrequest: dict, review: dict) -> None:
     """Will handle with care."""
-    if review["state"] == "commented":
-        notify_channel(
-            "pull_request_review",
-            f"{google_chat_username_by_github_user(review['user']['login'])} submitted a review:comment"
-            f" for Pull Request '{pullrequest['title']}'",
-            pullrequest["html_url"],
-        )
-    elif review["state"] == "approved":
+    # if review["state"] == "commented":
+    #    notify_channel(
+    #        "pull_request_review",
+    #        f"{google_chat_username_by_github_user(review['user']['login'])} submitted a review:comment"
+    #        f" for Pull Request '{pullrequest['title']}'",
+    #        pullrequest["html_url"],
+    #    )
+    if review["state"] == "approved":
         add_labels(pullrequest["_links"]["issue"]["href"], ["approved"])
 
 
