@@ -402,10 +402,11 @@
         },
         "pygithub": {
             "hashes": [
-                "sha256:2ce91d4990efbfb7a0a1abd06e2106a3998a4a5810a4bdd3c1b6be5499918e9b"
+                "sha256:2638ea9a2070d995197dca2ac521c207f8de000cc3aa5e912e264932886781ba",
+                "sha256:f3e701a227a81a16fe35695ae812c1ce9290dfb6a5190b364c29cef7d8638a10"
             ],
             "index": "pypi",
-            "version": "==1.43.7"
+            "version": "==1.47"
         },
         "pyjwt": {
             "hashes": [
