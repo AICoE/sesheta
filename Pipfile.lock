@@ -141,11 +141,11 @@
         },
         "daiquiri": {
             "hashes": [
-                "sha256:8832f28e110165b905993b4bdab638a3c245f5671d5976f226f2628e7d2e7862",
-                "sha256:ac0e69ac0a8c4ceabcf57f14ba4dc7b5940dc2bf9d1ee620d2ae9fa8f78c7891"
+                "sha256:0d5bf9c5719fbca4928dc2a882c165cd2b5c81be28f7f1626ced04c1c6b4aae2",
+                "sha256:236183ba51f35f4ae0e23fd20119d0fa082995c08d77bd562dbc00ea8f504bf6"
             ],
             "index": "pypi",
-            "version": "==1.5.0"
+            "version": "==2.1.1"
         },
         "deprecated": {
             "hashes": [
