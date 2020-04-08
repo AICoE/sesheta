@@ -546,12 +546,8 @@
             "version": "==3.0.1"
         },
         "thoth-common": {
-            "hashes": [
-                "sha256:f46c24ec30aa74ea27a329fc45315b99a52fa7300a6cc63db04e69adeb3ecb20",
-                "sha256:fd6cd636b0628111a9246f68edd8ef65dcc1bd29098ce43176e593be210d58b9"
-            ],
             "index": "pypi",
-            "version": "==0.12.8"
+            "version": "==0.12.9"
         },
         "tzlocal": {
             "hashes": [
