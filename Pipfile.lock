@@ -389,11 +389,11 @@
         },
         "pygithub": {
             "hashes": [
-                "sha256:2638ea9a2070d995197dca2ac521c207f8de000cc3aa5e912e264932886781ba",
-                "sha256:f3e701a227a81a16fe35695ae812c1ce9290dfb6a5190b364c29cef7d8638a10"
+                "sha256:312100d964259dae394b6e5efc7c30778c4f2a9b5e51d6caa3e62a799bb1014d",
+                "sha256:792948610930e135fd174ce8eacf9f4782fe10443faded61d0978d07876382c4"
             ],
             "index": "pypi",
-            "version": "==1.47"
+            "version": "==1.50"
         },
         "pyjwt": {
             "hashes": [
