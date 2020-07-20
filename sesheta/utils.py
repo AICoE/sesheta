@@ -49,6 +49,7 @@ GITHUB_GOOGLE_CHAT_MAPPING = {
     "sub-mod": "Subin Modeel",
     "CermakM": "Marek Cermak",
     "vpavlin": "Vaclav Pavlin",
+    "tumido": "Tomáš Coufal",
 }
 
 # pragma: no cover
