@@ -102,18 +102,11 @@ def random_positive_emoji2() -> str:
 
 
 def google_chat_username_by_github_user(github: str) -> str:
-    """Map a GitHub User to a Google Chat User."""
-    gchat = None
+    """Map a GitHub User to a Google Chat User.
 
-    try:
-        gchat = GITHUB_GOOGLE_CHAT_MAPPING[github]
-    except KeyError as exp:
-        _LOGGER.exception(exp)
-
-    if not gchat:
-        return github
-
-    return f"{gchat}"
+    If the user is not found, the github identifier is returned.
+    """
+    return GITHUB_GOOGLE_CHAT_MAPPING.get(github) or github
 
 
 def notify_channel(kind: str, message: str, url: str) -> None:
