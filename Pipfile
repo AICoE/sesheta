@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+daiquiri = "*"
 thoth-common = "*"
 requests = "*"
 flask = "*"
@@ -11,9 +12,9 @@ gunicorn = "*"
 igitt = "*"
 click = "==6.6"
 pygithub = "*"
+gitdb = "*"
 "oauth2client" = "*"
 google-api-python-client = "*"
-daiquiri = "*"
 
 [dev-packages]
 pytest = "*"
