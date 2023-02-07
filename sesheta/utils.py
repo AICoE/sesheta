@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Sesheta
-# Copyright(C) 2018,2019 Christoph Görn
+# Copyright(C) 2018,2019,2023 Christoph Görn
 #
 # This program is free software: you can redistribute it and / or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ from httplib2 import Http
 from apiclient.discovery import build, build_from_document
 from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
+from sesheta.webhooks import CONFIG_DISABLE_NOTIFICATIONS
 
 daiquiri.setup(level=logging.DEBUG, outputs=("stdout", "stderr"))
 _LOGGER = daiquiri.getLogger(__name__)
@@ -118,6 +119,10 @@ def google_chat_username_by_github_user(github: str) -> str:
 
 def notify_channel(kind: str, message: str, url: str) -> None:
     """Send message to a Google Hangouts Chat space."""
+    if CONFIG_DISABLE_NOTIFICATIONS:
+        _LOGGER.info("Notifications are disabled, not sending anything")
+        return
+
     response = None
     scopes = ["https://www.googleapis.com/auth/chat.bot"]
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
