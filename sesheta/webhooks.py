@@ -50,7 +50,7 @@ _DRY_RUN = os.environ.get("SESHETA_DRY_RUN", False)
 _SESHETA_GITHUB_ACCESS_TOKEN = os.getenv("SESHETA_GITHUB_ACCESS_TOKEN", None)
 _SESHETA_GITHUB_WEBHOOK_SECRET = os.getenv("SESHETA_GITHUB_WEBHOOK_SECRET", None)
 _GIT_API_REQUEST_HEADERS = {"Authorization": "token %s" % _SESHETA_GITHUB_ACCESS_TOKEN}
-
+CONFIG_DISABLE_NOTIFICATIONS = os.getenv("CONFIG_DISABLE_NOTIFICATIONS", True)
 
 webhooks = Blueprint("webhook", __name__, url_prefix="")
 
@@ -222,24 +222,6 @@ def handle_github_open_pullrequest_merged_successfully(pullrequest: dict) -> Non
     return
 
 
-def _add_size_label(pullrequest: dict) -> None:  # pragma: no cover
-    """Add a size label to a GitHub Pull Request."""
-    if pullrequest["title"].startswith("Automatic update of dependency"):
-        return
-
-    if pullrequest["state"] == "closed":
-        return
-
-    sizeLabel = calculate_pullrequest_size(pullrequest)
-
-    _LOGGER.debug(f"Calculated the size of {pullrequest['html_url']} to be: {sizeLabel}")
-
-    if sizeLabel:
-        # TODO check if there is a size label, if it is the same: skip
-        # otherwise update
-        set_size(pullrequest["_links"]["issue"]["href"], sizeLabel)
-
-
 @webhooks.route("/github", methods=["POST"])
 def handle_github_webhook():  # pragma: no cover
     """Entry point for github webhook."""
@@ -265,25 +247,6 @@ def handle_github_webhook():  # pragma: no cover
             _LOGGER.exception(exc)
 
         _LOGGER.debug(f"Received a webhook: event: {event}, action: {action}.")
-
-        # if event == "pull_request":
-        #     _add_size_label(payload["pull_request"])
-        #
-        #     if action == "opened":
-        #        process_github_open_pullrequest(payload["pull_request"])
-        #     elif action == "closed":
-        #        if payload["pull_request"]["merged"]:
-        #            handle_github_open_pullrequest_merged_successfully(payload["pull_request"])
-        #     This has been migrated to Sefkhet-Abwy
-        #     elif action == "review_requested":
-        #        process_github_pull_request_review_requested(payload["pull_request"])
-        #     if action == "labeled":
-        #         process_github_pull_request_labeled(payload["pull_request"])
-        # elif event == "issues":
-        #     if payload["action"] == "opened":
-        #         handle_github_open_issue(payload["issue"], payload["repository"])
-        # elif event == "pull_request_review":
-        #     process_github_pull_request_review(payload["pull_request"], payload["review"])
 
     else:
         _LOGGER.error(f"Webhook secret mismatch: me: {hashhex} != them: {signature}")
