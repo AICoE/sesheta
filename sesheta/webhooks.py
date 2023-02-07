@@ -266,25 +266,6 @@ def handle_github_webhook():  # pragma: no cover
 
         _LOGGER.debug(f"Received a webhook: event: {event}, action: {action}.")
 
-        # if event == "pull_request":
-        #     _add_size_label(payload["pull_request"])
-        #
-        #     if action == "opened":
-        #        process_github_open_pullrequest(payload["pull_request"])
-        #     elif action == "closed":
-        #        if payload["pull_request"]["merged"]:
-        #            handle_github_open_pullrequest_merged_successfully(payload["pull_request"])
-        #     This has been migrated to Sefkhet-Abwy
-        #     elif action == "review_requested":
-        #        process_github_pull_request_review_requested(payload["pull_request"])
-        #     if action == "labeled":
-        #         process_github_pull_request_labeled(payload["pull_request"])
-        # elif event == "issues":
-        #     if payload["action"] == "opened":
-        #         handle_github_open_issue(payload["issue"], payload["repository"])
-        # elif event == "pull_request_review":
-        #     process_github_pull_request_review(payload["pull_request"], payload["review"])
-
     else:
         _LOGGER.error(f"Webhook secret mismatch: me: {hashhex} != them: {signature}")
 
